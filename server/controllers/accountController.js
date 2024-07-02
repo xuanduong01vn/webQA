@@ -1,5 +1,7 @@
 import accountModel from '../models/accountModel.mjs';
 import { APIfeatures } from '../lib/features.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 const accountController ={
   getAccounts: async (req,res) =>{
@@ -62,15 +64,19 @@ const accountController ={
       const userFound = await accountModel.findOne(req.body);
 
       if(userFound && email.trim().length>0 && password.trim().length>0){
+        const token = jwt.sign({ _id: userFound._id }, process.env.TOKEN_SECRET);
+        res.header('auth-token', token);
         res.status(200).json({
-          message: 'Login thành công',
-          account: userFound.idTypeAccount});
+          message: 'Login success',
+          account: userFound.idTypeAccount,
+          token: token});
       }
-      else if(!userFound || email.trim().length==0 || password.trim().length==0){
+      if(!userFound || email.trim().length==0 || password.trim().length==0){
         res.status(200).json({
-          message:'Login thất bại'
+          message:'Login failed'
         });
       }
+      
     } catch (err) {
       res.status(500).json(err.message);
     }

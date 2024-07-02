@@ -19,16 +19,20 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage});
+const upload = multer({storage});
 
 const fileController={
   uploadAvatar: async(req, res) => {
     const fileUrl = `http://localhost:9999/file/avatar/${req.file.filename}`;
     res.status(200).json({ message: 'Avatar uploaded successfully', file: req.file, fileUrl });
   },
-  uploadPost: async(req, res) => {
-    const fileUrl = `http://localhost:9999/file/post/${req.file.filename}`;
-    res.status(200).json({ message: 'File post uploaded successfully', file: req.file, fileUrl });
+
+  uploadPosts: async (req, res) => {
+    const fileUrls = req.files.map(file => ({
+      originalname: file.originalname,
+      fileUrl: `http://localhost:9999/file/post/${file.filename}`,
+    }));
+    res.status(200).json({ message: 'Posts uploaded successfully', files: req.files, fileUrls });
   },
 }
 

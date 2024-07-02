@@ -3,15 +3,15 @@ import mongoose from 'mongoose';
 const tagSchema = new mongoose.Schema({
   nameTag:{
     type: String,
-    require: true
+    required: true
   },
   createAt:{
     type: Date,
-    require: true
+    required: true
   },
   isDeleted:{
     type: Boolean,
-    require: true
+    required: true
   },
 }, 
 {

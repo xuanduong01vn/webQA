@@ -3,11 +3,11 @@ import mongoose from 'mongoose';
 const typePostSchema = new mongoose.Schema({
   idTypePost:{
     type: Number,
-    require: true
+    required: true
   },
   nameTypePost:{
     type: String,
-    require: true
+    required: true
   }
 }, 
 { collection: 'typePost' }, 

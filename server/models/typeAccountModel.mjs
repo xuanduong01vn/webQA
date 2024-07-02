@@ -3,11 +3,11 @@ import mongoose from 'mongoose';
 const typeAccountSchema = new mongoose.Schema({
   idTypeAccount:{
     type: Number,
-    require: true
+    required: true
   },
   nameTypeAccount:{
     type: String,
-    require: true
+    required: true
   }
 }, 
 { collection: 'typeAccount' }, 
