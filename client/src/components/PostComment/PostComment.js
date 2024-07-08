@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, {useEffect, useState } from 'react';
+import React, {useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { format, longFormatters } from 'date-fns';
 import { vi } from 'date-fns/locale';
@@ -10,6 +10,7 @@ import {
 
 import CommentItem from './CommentItem.js';
 import PostReply from './PostReply.js';
+import { AuthContext } from '../../AuthContext.js';
 
 function PostComment(props){
 
@@ -27,6 +28,7 @@ function PostComment(props){
     idParent: '',
     isDeleted: false,
   });
+  const authToken = useContext(AuthContext);
 
   //lấy danh sách comment của bài viết
   useEffect(()=>{
@@ -175,24 +177,30 @@ function PostComment(props){
   return(
     <Wrapper>
       <div className='post-comment-container'>
-        <div className='post-comment-alert'>
-          <FontAwesomeIcon icon={faComment}/>
-          <p>Đăng nhập để bình luận</p>
-        </div>
-        <div className='post-comment-type-box'>
-          <div className='comment-current-user'>
-            <div className='comment-current-user-avatar'>
-              <img src='https://www.vietnamfineart.com.vn/wp-content/uploads/2023/07/anh-avatar-dep-cho-con-gai-1.jpg' 
-              alt='user avatar' className='comment-current-user-image'/>
-            </div>
-            <p className='comment-current-user-name'>xuanduong</p>
+        {!authToken.authToken 
+        ?(
+          <div className='post-comment-alert'>
+            <FontAwesomeIcon icon={faComment}/>
+            <p>Đăng nhập để bình luận</p>
           </div>
-          <textarea className='comment-type-box' type='text' placeholder='Viết bình luận...'
-          value ={inputComment}
-          onChange={onChangeInput}/>
-          <button onClick={postComment} className='comment-send-btn active'>Bình luận</button>
-          <button onClick={cancelComment} className='comment-send-btn'>Hủy</button>
-        </div>
+        )
+        :(
+          <div className='post-comment-type-box'>
+            <div className='comment-current-user'>
+              <div className='comment-current-user-avatar'>
+                <img src='https://www.vietnamfineart.com.vn/wp-content/uploads/2023/07/anh-avatar-dep-cho-con-gai-1.jpg' 
+                alt='user avatar' className='comment-current-user-image'/>
+              </div>
+              <p className='comment-current-user-name'>xuanduong</p>
+            </div>
+            <textarea className='comment-type-box' type='text' placeholder='Viết bình luận...'
+            value ={inputComment}
+            onChange={onChangeInput}/>
+            <button onClick={postComment} className='comment-send-btn active'>Bình luận</button>
+            <button onClick={cancelComment} className='comment-send-btn'>Hủy</button>
+          </div>
+        )}
+        
         {listComment.length==0
         ?(<h3>Chưa có bình luận nào</h3>)
         :(listComment.length>0)?

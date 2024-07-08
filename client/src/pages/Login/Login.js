@@ -7,8 +7,8 @@ import {
   faEyeSlash,
   faEye,
 } from '@fortawesome/free-solid-svg-icons';
-
-
+import { useContext } from 'react';
+import { AuthContext } from '../../AuthContext';
 
 function Login(){
   document.title='Login';
@@ -27,6 +27,7 @@ function Login(){
     password: '',
     confirmPassword: '',
   });
+  const auth = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -75,6 +76,7 @@ function Login(){
         }
         else if(res.data.message=='Login success'){
           localStorage.setItem('auth-token', res.data.token);
+          auth.loginSuccess(res.data.token);
           navigate(res.data.account==1 ?`/dashboard`:`/` );
         }
         else if(res.data.message=='Login failed'){

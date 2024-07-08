@@ -11,7 +11,7 @@ import DashboardComment from '../../components/DashboardComment/DashboardComment
 
 
 function PageDashboardComment(){
-  document.title='Dashboead comment';
+  document.title='Dashboard comment';
   return (
     <Wrapper>
       <div className='dashboard-admin-container'>

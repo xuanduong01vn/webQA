@@ -70,7 +70,6 @@ function PostItem(props){
     timeCreated= format(new Date(post.createAt), 'HH:mm, EEEE, dd MMM yyyy', { locale: vi });
   }
 
-
   return(
     <Wrapper>
       <div className='post-item-cover'>

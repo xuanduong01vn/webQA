@@ -6,7 +6,7 @@ import DashboardUser from '../../components/DashboardUser/DashboardUser';
 
 
 function PageDashboardUser(){
-  document.title='Dashboead user';
+  document.title='Dashboard user';
   return (
     <Wrapper>
       <div className='dashboard-admin-container'>

@@ -104,7 +104,7 @@ function AccountPassword(){
     <Wrapper>
       <h2 className='password-container-title'>Mật khẩu</h2>
       <div className='password-container'>
-        <div className='password-item'>
+        <div className='password-item' style={{ display: 'none' }}>
           <div className='password-type-box'>
             <input type="password" id="current-password" name="current-password" autocomplete="new-password" style={{ display: 'none' }} />
           </div>

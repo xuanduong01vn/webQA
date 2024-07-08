@@ -1,8 +1,44 @@
 import React, {useEffect, useState} from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { CKEditor, Alignment } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios';
 import styled from 'styled-components';
 
+class NewEditor extends ClassicEditor {};
+
+NewEditor.builtinPlugins = [
+  ...ClassicEditor.builtinPlugins,
+  Alignment
+];
+
+NewEditor.defaultConfig = {
+  toolbar: {
+      items: [
+        'undo', 'redo', 
+        '|',
+        'heading', 
+        '|', 
+        'bold', 'italic', 'blockQuote',
+        '|', 
+        'link', 'imageUpload', 'codeBlock', 'insertTable', 
+        '|', 
+        'bulletedList', 'numberedList', 'outdent', 'indent',
+      ],
+      shouldNotGroupWhenFull: true,
+  },
+  alignment: {
+      options: [ 'left', 'center', 'right', 'justify' ]
+  },
+  // table: {
+  //     contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+  // },
+  language: 'en',
+  ckfinder: {
+    // Config for image upload
+    uploadUrl: '/path/to/upload/image',
+  },
+};
 
 function NewPost(){
 
@@ -11,6 +47,7 @@ function NewPost(){
   const [listTag, setListTag] = useState([]);
   const [tempListTag, setTempListTag] = useState([]);
   const [firstLoad, setFirstLoad] = useState(true);
+  const [editorData, setEditorData] = useState('');
   const [inputValue, setInputValue] = useState({
     title: '',
     content: '',
@@ -210,14 +247,50 @@ function NewPost(){
         </div>
 
         <div className='new-post-item'>
-          <div className='new-post-content'>
+          {/* <div className='new-post-content'>
             <textarea autoComplete='off' type='text' className='new-post-content-input' placeholder='Nội dung bài viết'
               value={inputValue.content} name='content'
               onChange={e=>onChangeValue(e)}
             />
-          </div>
+          </div> */}
+          
         </div>
-        
+        {/* <CKEditor
+            editor={ClassicEditor}
+            data={editorData}
+            onChange={(event, editor) => {
+            const data = editor.getData();
+            setEditorData(data);
+            }}
+          /> */}
+        <CKEditor
+          editor={ClassicEditor}
+          data={editorData}
+          // config={{
+          //   toolbar: {
+          //     items: [
+          //       'undo', 'redo', 
+          //       '|',
+          //       'heading', 
+          //       '|', 
+          //       'bold', 'italic', 'blockQuote',
+          //       '|', 
+          //       'link', 'imageUpload', 'codeBlock', 'insertTable', 
+          //       '|', 
+          //       'bulletedList', 'numberedList', 'outdent', 'indent',
+          //     ],
+          //     shouldNotGroupWhenFull: true,
+          //   },
+          //   ckfinder: {
+          //     // Config for image upload
+          //     uploadUrl: '/path/to/upload/image',
+          //   },
+          // }}
+          onChange={(event, editor) => {
+            const data = editor.getData();
+            setEditorData(data);
+          }}
+        />  
       </div>
     </Wrapper>
   )
@@ -359,6 +432,33 @@ const Wrapper = styled.div`
     max-width: 100%;
     box-sizing: border-box;
     resize: none;
+  }
+
+  .ck-editor{
+    flex-wrap: wrap;
+    height: max-content;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .ck-editor__top{
+    width: 100%;
+    height: 40px;
+  }
+
+  .ck-editor__main{
+    width: 100%;
+    height: 700px;
+
+    & .ck-editor__editable:focus-within{
+      border: 1px solid var(--hightlight-color);
+    }
+  }
+
+  .ck-editor__editable{
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
   }
 
 `

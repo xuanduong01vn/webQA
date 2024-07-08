@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass,
@@ -7,6 +7,7 @@ import { faMagnifyingGlass,
           faBell,
           faXmark,
  } from '@fortawesome/free-solid-svg-icons';
+ import { AuthContext } from '../../AuthContext';
 
 function Header(){
   const location = useLocation();
@@ -17,11 +18,11 @@ function Header(){
   const queryParams = getQueryParams(location.search);
   var isSearch = queryParams.get('search');
 
-  const [openInput, setOpenInput] = useState(false);
+  const [openInput, setOpenInput] = useState(true);
   const [namePopup, setNamePopup] = useState(null);
   const [searchText, setSearchText] = useState(isSearch || '');
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [currentToken, setCurrentToken] = useState(localStorage.getItem('auth-token'));
+  const currentToken = useContext(AuthContext);
 
   const inputRef = useRef(null);
   const popupRefs = useRef({});
@@ -66,7 +67,8 @@ function Header(){
 
   //handle open search box in mobile screen
   function handleOpenSearchBox(){
-    setOpenInput(true);
+    setSearchText('');
+    setOpenInput(false);
     console.log(inputRef.current);
     inputRef.current.focus();
     inputRef.current.setSelectionRange(0,0);
@@ -74,7 +76,6 @@ function Header(){
   //handle close search box in mobile screen
   function handleCloseSearchBox(){
     setOpenInput(false);
-    setSearchText('');
   }
 
   useEffect(() => {
@@ -131,7 +132,7 @@ function Header(){
             } */}
             <div className='header-bar'>
               <a href='/' className='header-title'>QAx</a>
-              <div className={(window.innerWidth<=768 && searchText.trim().length>0)||openInput?'search-container mobile':'search-container'}>
+              <div className={window.innerWidth<=768 && openInput?'search-container mobile':'search-container'}>
                   <input ref={inputRef}
                   id='search-box' 
                   type='text' placeholder='Tìm kiếm trên QAx'
@@ -143,12 +144,11 @@ function Header(){
                   <button onClick={handleSearchKey} className={searchText.trim().length>0?'search-btn':'search-btn disable'}>
                     <FontAwesomeIcon icon={faMagnifyingGlass} className='search-icon' />
                   </button>
-                  {((window.innerWidth<=768 && searchText.trim().length>0) || openInput) && 
+                  {((window.innerWidth<=768 && searchText.trim().length>0) && openInput) && 
                     <button onClick={handleCloseSearchBox} id='search-cancel-btn'>
                     <FontAwesomeIcon icon={faXmark} className='search-cancel-icon' />
                   </button>}
-                  
-                  {((window.innerWidth<=768 && searchText.trim().length==0) && !openInput) && 
+                  {((window.innerWidth<=768 && searchText.trim().length==0) || openInput) && 
                     <button onClick={handleOpenSearchBox} className='search-header-btn'>
                     <FontAwesomeIcon icon={faMagnifyingGlass} className='search-icon' />
                   </button>}
@@ -185,7 +185,7 @@ function Header(){
                     </div>
                   </button>
                 </div>
-                {!currentToken 
+                {!currentToken.authToken 
                 ?(
                   <div className='sign-container'>
                     <a href='/login' id='sign-btn'>

@@ -6,7 +6,7 @@ import DashboardTag from '../../components/DashboardTag/DashboardTag';
 
 
 function PageDashboardTag(){
-  document.title='Dashboead tag';
+  document.title='Dashboard tag';
   return (
     <Wrapper>
       <div className='dashboard-admin-container'>
