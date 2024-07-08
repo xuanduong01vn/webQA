@@ -18,7 +18,7 @@ function Header(){
   const queryParams = getQueryParams(location.search);
   var isSearch = queryParams.get('search');
 
-  const [openInput, setOpenInput] = useState(true);
+  const [openInput, setOpenInput] = useState(false);
   const [namePopup, setNamePopup] = useState(null);
   const [searchText, setSearchText] = useState(isSearch || '');
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -67,15 +67,14 @@ function Header(){
 
   //handle open search box in mobile screen
   function handleOpenSearchBox(){
-    setSearchText('');
-    setOpenInput(false);
-    console.log(inputRef.current);
+    setOpenInput(true);
     inputRef.current.focus();
     inputRef.current.setSelectionRange(0,0);
   }
   //handle close search box in mobile screen
   function handleCloseSearchBox(){
     setOpenInput(false);
+    setSearchText('');
   }
 
   useEffect(() => {
@@ -119,20 +118,9 @@ function Header(){
     return (    
         <Wrapper>
           <div className='header-container'>
-            {/* {openInput &&
-              <div className='header-search-bar'>
-                <input type='text' className='header-search-box' 
-                placeholder='Tìm kiếm trên QAx'
-                onChange={e=>{onChangeValue(e)}}
-                />
-                <button onClick={handleCloseSearchBox} id='search-cancel-btn'>
-                  <FontAwesomeIcon icon={faXmark} className='search-cancel-icon' />
-                </button>
-              </div>
-            } */}
             <div className='header-bar'>
               <a href='/' className='header-title'>QAx</a>
-              <div className={window.innerWidth<=768 && openInput?'search-container mobile':'search-container'}>
+              <div className={(window.innerWidth<=768 && (openInput || searchText.trim().length>0))?'search-container mobile':'search-container'}>
                   <input ref={inputRef}
                   id='search-box' 
                   type='text' placeholder='Tìm kiếm trên QAx'
@@ -144,11 +132,11 @@ function Header(){
                   <button onClick={handleSearchKey} className={searchText.trim().length>0?'search-btn':'search-btn disable'}>
                     <FontAwesomeIcon icon={faMagnifyingGlass} className='search-icon' />
                   </button>
-                  {((window.innerWidth<=768 && searchText.trim().length>0) && openInput) && 
+                  {(window.innerWidth<=768 && (openInput || searchText.trim().length>0)) && 
                     <button onClick={handleCloseSearchBox} id='search-cancel-btn'>
                     <FontAwesomeIcon icon={faXmark} className='search-cancel-icon' />
                   </button>}
-                  {((window.innerWidth<=768 && searchText.trim().length==0) || openInput) && 
+                  {((window.innerWidth<=768 && searchText.trim().length==0) && !openInput) && 
                     <button onClick={handleOpenSearchBox} className='search-header-btn'>
                     <FontAwesomeIcon icon={faMagnifyingGlass} className='search-icon' />
                   </button>}
