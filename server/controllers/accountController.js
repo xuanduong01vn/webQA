@@ -52,35 +52,6 @@ const accountController ={
       res.status(500).json(err.message);
     }
   },
-  login: async (req, res)=> {
-    try {
-      const { email, password } = req.body;
-
-      if (!password || !email || email.trim().length==0 || password.trim().length==0) {
-        return res.status(400).json('Email and password are required');
-      }
-
-      // const newAccount = await accountModel(req.body);
-      const userFound = await accountModel.findOne(req.body);
-
-      if(userFound && email.trim().length>0 && password.trim().length>0){
-        const token = jwt.sign({ _id: userFound._id }, process.env.TOKEN_SECRET);
-        res.header('auth-token', token);
-        res.status(200).json({
-          message: 'Login success',
-          account: userFound.idTypeAccount,
-          token: token});
-      }
-      if(!userFound || email.trim().length==0 || password.trim().length==0){
-        res.status(200).json({
-          message:'Login failed'
-        });
-      }
-      
-    } catch (err) {
-      res.status(500).json(err.message);
-    }
-  },
   updateAccount: async (req, res) => {
     try {
       const account = await accountModel.findById(req.params.id);

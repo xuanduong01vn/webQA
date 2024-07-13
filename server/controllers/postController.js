@@ -6,6 +6,7 @@ const postController ={
   getPosts: async (req,res) =>{
     try{
       let features = new APIfeatures(postModel.find(), req.query)
+        // .paginating()
         .sorting()
         .search()
         .filtering();
