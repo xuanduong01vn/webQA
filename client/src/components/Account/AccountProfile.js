@@ -1,25 +1,36 @@
 import styled from 'styled-components';
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useContext} from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera,
 } from '@fortawesome/free-solid-svg-icons';
+import { AuthContext } from '../../AuthContext';
 
 function AccountProfile(){
 
-  const id ='66669b9c646d48fe74ba397b';
+  const detailUser = useContext(AuthContext);
+  const [loading, setLoading]= useState(true);
+  // const [user, setUser] = useState(detailUser.userLogin);
+
+  // useEffect(()=>{
+  //   if(detailUser.userLogin){
+  //     setUser(detailUser.userLogin);
+  //     setLoading(false);
+  //   }
+  // },[user]);
+
   const inputFileRef = useRef();
   const [user, setUser] = useState(null);
-  const [loading, setLoading]= useState(true);
-  const [avatarImg, setAvatarImg] = useState(null);
+  
+  const [avatarImg, setAvatarImg] = useState('');
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState('');
   const fileInputRef = useRef(null);
 
   const [inputValue, setInputValue] = useState({
-    fullname:'',
-    birthday:'',
-    avatar: '',
+    fullname:user?.fullname,
+    birthday:user?.birthday,
+    avatar: user?.avatar,
   })
 
   var newAvatar=inputValue.avatar;
@@ -28,7 +39,7 @@ function AccountProfile(){
   useEffect(()=>{
     const getUser = async(req,res )=>{
       try {
-        const response = await axios.get(`http://localhost:9999/accounts/${id}`);
+        const response = await axios.get(`http://localhost:9999/accounts/${detailUser.idCurrentUser}`);
         return response.data;
       } catch (err) {
         console.log(err.message);
@@ -71,7 +82,7 @@ function AccountProfile(){
   var years = [];
   var months = [];
   var dates = [];
-  var [datePerMonth, setDatePerMonth]=useState(28);
+  var [datePerMonth, setDatePerMonth] = useState(28);
 
   useEffect(()=>{
     switch (inputBirthday?.monthSelect) {
@@ -189,21 +200,21 @@ function AccountProfile(){
             'Content-Type': 'multipart/form-data',
           },
         });
-        console.log(response.data);
+        // console.log(response.data);
         newAvatar = response.data.fileUrl;
       } catch (err) {
         console.log(err.message,'File upload failed');
       }
     }
-    console.log(newAvatar);
-    axios.put(`http://localhost:9999/accounts/${id}`,{
+    axios.put(`http://localhost:9999/accounts/${user._id}`,{
       fullname: inputValue.fullname,
       birthday: new Date(inputBirthday.yearSelect,inputBirthday.monthSelect-1,inputBirthday.dateSelect),
       avatar: newAvatar,
     })
     .then(res=>{
-      console.log(res.data);
-      setMessage('Cập nhật thành công')
+      // console.log(res.data);
+      setMessage('Cập nhật thành công');
+      detailUser.updateUser(res.data.data.avatar);
       setTimeout(()=>{
         setMessage('')
       },3000)
@@ -327,6 +338,9 @@ const Wrapper = styled.div`
     height: 200px;
     border-radius: 50%;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .avatar-image{

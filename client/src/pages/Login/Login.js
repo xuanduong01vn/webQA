@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import { Navigate ,useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faEyeSlash,
@@ -27,10 +27,9 @@ function Login(){
     password: '',
     confirmPassword: '',
   });
-  const auth = useContext(AuthContext);
+  const authToken = useContext(AuthContext);
 
   const navigate = useNavigate();
-
 
   function onChangeValue(e){
     const {name, value} = e.target;
@@ -69,15 +68,15 @@ function Login(){
   function handleLogin(){
     setSamePassword(inputValue.password != inputValue.confirmPassword);
     if(inputValue.password.length>=6 && inputValue.email.trim().length>0){
-      axios.post(`http://localhost:9999/accounts/login/`,newInputAccount)
+      axios.post(`http://localhost:9999/login/`,newInputAccount, { withCredentials: true })
       .then(res=>{
-        console.log(res.data);
         if(res.data=='Username and password are required'){
         }
         else if(res.data.message=='Login success'){
-          localStorage.setItem('auth-token', res.data.token);
-          auth.loginSuccess(res.data.token);
-          navigate(res.data.account==1 ?`/dashboard`:`/` );
+          // localStorage.setItem('auth-token', res.data.token);
+          console.log(res.data);
+          authToken.loginSuccess(res.data.user);
+          navigate(res.data.user.idTypeAccount==1 ?`/dashboard`:`/` );
         }
         else if(res.data.message=='Login failed'){
           setLoginFailed(true);

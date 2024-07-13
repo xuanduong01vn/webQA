@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import React, {useEffect, useState} from 'react';
+import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -25,14 +26,14 @@ function QuestionItem(props){
   return(
     <Wrapper>
       <div className='question-item-cover'>
-        <a href='/post' className='question-item-title'>
-          <h3>{post.title}</h3> 
-          </a>
+        <Link to={`/post/${post?._id}`} className='question-item-title'>
+          <h3>{post?.title}</h3> 
+          </Link>
         <div className='question-item-user'>
           <div className='question-item-author'>
-            <a href='/user' className='question-item-author-info'>
+            <Link to={`/user/${author?._id}`} className='question-item-author-info'>
               {author?.username}
-            </a>
+            </Link>
           </div>
           <span className='uestion-item-author-ask'>{timeCreated}</span>
         </div>

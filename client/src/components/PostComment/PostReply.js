@@ -1,9 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { AuthContext } from '../../AuthContext';
 
 function PostReply(props){
 
+  const authToken = useContext(AuthContext);
   const {parent, closeReply, post, postReply} = props;
   const [amountCmt, setAmountCmt] = useState(post?.amountComment);
   const amountComment = useRef(post?.amountComment);
@@ -11,7 +13,7 @@ function PostReply(props){
   const [inputComment, setInputComment] = useState('');
   const [valueComment, setValueComment] = useState({
     content: '',
-    idUser: '66669b9c646d48fe74ba397b',
+    idUser: authToken.idCurrentUser,
     idPost: post?._id,
     createAt: new Date(),
     idParent: parent?._id,
@@ -41,10 +43,9 @@ function PostReply(props){
         <div className='post-reply-type-box'>
         <div className='reply-current-user'>
           <div className='reply-current-user-avatar'>
-            <img src='https://www.vietnamfineart.com.vn/wp-content/uploads/2023/07/anh-avatar-dep-cho-con-gai-1.jpg' 
-            alt='user avatar' className='reply-current-user-image'/>
+            <img src={authToken.userLogin.avatar} alt='user avatar' className='reply-current-user-image'/>
           </div>
-          <p className='reply-current-user-name'>xuanduong</p>
+          <p className='reply-current-user-name'>{authToken.userLogin.username}</p>
         </div>
         <input className='reply-type-box' type='text' placeholder='Viết bình luận...'
           autoFocus

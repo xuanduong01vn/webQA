@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { CKEditor, Alignment } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios';
 import styled from 'styled-components';
+import { AuthContext } from '../../AuthContext';
 
 class NewEditor extends ClassicEditor {};
 
@@ -53,6 +54,7 @@ function NewPost(){
     content: '',
     tag: '',
   });
+  const userToken= useContext(AuthContext);
 
   const [newTag, setNewTag] = useState({
     nameTag: '',
@@ -141,7 +143,7 @@ function NewPost(){
     amountLiked: 0,
     amountMarked: 0,
     amountComment: 0,
-    idAuthor: '66669b9c646d48fe74ba397b',
+    idAuthor: userToken.idCurrentUser,
     createAt: new Date(),
     idTypePost: 1,
     isDeleted: false,

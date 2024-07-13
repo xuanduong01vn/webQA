@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 function NewAdmin(){
 
@@ -144,9 +145,9 @@ function NewAdmin(){
         
         
         <div className='profile-action'>
-          <a onClick={addNewAdmin} 
+          <Link onClick={addNewAdmin} 
           // href='/dashboard/admins'
-           className='profile-btn active'>Lưu</a>
+           className='profile-btn active'>Lưu</Link>
         </div>
         
       </div>

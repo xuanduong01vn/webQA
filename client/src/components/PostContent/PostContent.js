@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, {useState, useEffect, createContext, useRef } from 'react';
+import React, {useState, useEffect, useContext, useRef } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -15,6 +15,7 @@ import {
   faEllipsis,
   faMound,
 } from '@fortawesome/free-solid-svg-icons';
+import { AuthContext } from '../../AuthContext.js';
 import PostComment from '../PostComment/PostComment.js';
 
 
@@ -30,6 +31,7 @@ function PostContent(props){
   const [openPopUp, setOpenPopUp] = useState(false);
   const [liked, setLiked] = useState(false);
   const [marked, setMarked] = useState(false);
+  const userToken = useContext(AuthContext);
 
   useEffect(()=>{
     const getDataPost = async () => {
@@ -190,32 +192,34 @@ function PostContent(props){
                 <h1 className='post-content-title'>
                   {postData.title}
                 </h1>
-                <div className='author-action'>
-                  <button ref={popupBtnRef} onClick={(e)=>handleOpenPostPopUp(e)} className='author-action-btn'>
-                    <FontAwesomeIcon className='author-action-btn-icon' icon={faEllipsis} />
-                  </button>
-                    <div ref={popupRef} className={!openPopUp?'author-pop-up':'author-pop-up opened'}>
-                      <ul className='author-pop-up-list'>
-                        <li className='author-pop-up-item'>
-                          <a href={`/post/${postData._id}/edit`} className='author-pop-up-link'>
-                            Sửa bài viết
-                          </a>
-                        </li>
-                        <li className='author-pop-up-item'>
-                          <a className='author-pop-up-link' 
-                          onClick={()=>{
-                            setOpenPopUp('author-pop-up');
-                            onDeletePost({
-                            classParent: 'page-container blur',
-                            classChild: 'delete-post-popup',
-                          })}}>
-                            Xóa bài viết
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-  
-                </div>
+                {postData.idAuthor==userToken.idCurrentUser &&
+                  <div className='author-action'>
+                    <button ref={popupBtnRef} onClick={(e)=>handleOpenPostPopUp(e)} className='author-action-btn'>
+                      <FontAwesomeIcon className='author-action-btn-icon' icon={faEllipsis} />
+                    </button>
+                      <div ref={popupRef} className={!openPopUp?'author-pop-up':'author-pop-up opened'}>
+                        <ul className='author-pop-up-list'>
+                          <li className='author-pop-up-item'>
+                            <a href={`/post/${postData._id}/edit`} className='author-pop-up-link'>
+                              Sửa bài viết
+                            </a>
+                          </li>
+                          <li className='author-pop-up-item'>
+                            <a className='author-pop-up-link' 
+                            onClick={()=>{
+                              setOpenPopUp('author-pop-up');
+                              onDeletePost({
+                              classParent: 'page-container blur',
+                              classChild: 'delete-post-popup',
+                            })}}>
+                              Xóa bài viết
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                  </div>
+                }
+                
                 <div className='post-content-text'>
                   <p>
                     {postData.content}

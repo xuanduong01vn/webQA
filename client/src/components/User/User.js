@@ -14,7 +14,6 @@ function UserLayout(props){
   const [userPost, setUserPost] = useState(0);
   const [userLiked, setUserLiked] = useState(0);
 
-
   useEffect(()=>{
     const getUserData = async ()=>{
       try {
@@ -33,7 +32,7 @@ function UserLayout(props){
     .catch((err)=>{
       console.log(err.message);
     })
-  },[])
+  },[id])
 
   useEffect(()=>{
     const getUserPost = async(req, res)=>{
@@ -51,7 +50,7 @@ function UserLayout(props){
     .catch(err=>{
       console.log(err.message);
     })
-  },[useData]);
+  },[id]);
 
   return (
     <Wrapper>
@@ -83,7 +82,7 @@ function UserLayout(props){
         </div>
         <div className='user-content'>
           <h2 className='blog-container-title'>Bài viết</h2>
-          <PostList idUser={id}/>
+            <PostList idUser={id}/>
           {/* <QuestionList/> */}
         </div>
         

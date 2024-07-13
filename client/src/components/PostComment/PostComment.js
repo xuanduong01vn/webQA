@@ -15,6 +15,7 @@ import { AuthContext } from '../../AuthContext.js';
 function PostComment(props){
 
   const {post}= props;
+  const authToken = useContext(AuthContext);
   const [inputComment, setInputComment] = useState('');
   const [amountCmt, setAmountCmt] = useState(post?.amountComment);
   const [listComment, setListComment] = useState([]);
@@ -22,13 +23,12 @@ function PostComment(props){
   const [idCmt, setIdCmt] = useState('');
   const [valueComment, setValueComment] = useState({
     content: '',
-    idUser: '66669b9c646d48fe74ba397b',
+    idUser: authToken.idCurrentUser,
     idPost: post._id,
     createAt: new Date(),
     idParent: '',
     isDeleted: false,
   });
-  const authToken = useContext(AuthContext);
 
   //lấy danh sách comment của bài viết
   useEffect(()=>{
@@ -177,7 +177,7 @@ function PostComment(props){
   return(
     <Wrapper>
       <div className='post-comment-container'>
-        {!authToken.authToken 
+        {!authToken.idCurrentUser 
         ?(
           <div className='post-comment-alert'>
             <FontAwesomeIcon icon={faComment}/>
@@ -188,10 +188,9 @@ function PostComment(props){
           <div className='post-comment-type-box'>
             <div className='comment-current-user'>
               <div className='comment-current-user-avatar'>
-                <img src='https://www.vietnamfineart.com.vn/wp-content/uploads/2023/07/anh-avatar-dep-cho-con-gai-1.jpg' 
-                alt='user avatar' className='comment-current-user-image'/>
+                <img src={authToken.userLogin.avatar} alt='user avatar' className='comment-current-user-image'/>
               </div>
-              <p className='comment-current-user-name'>xuanduong</p>
+              <p className='comment-current-user-name'>{authToken.userLogin.username}</p>
             </div>
             <textarea className='comment-type-box' type='text' placeholder='Viết bình luận...'
             value ={inputComment}

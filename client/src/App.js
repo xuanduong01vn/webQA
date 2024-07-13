@@ -18,7 +18,6 @@ function App() {
           {
             routes.map((route,index)=>{
               return <Route key={index} exact path={route.path} element={<route.component/>}/>
-
             })
           }
         </Routes>

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook,
   faGithub
@@ -25,33 +26,33 @@ function Footer(){
         </div>
         <div className='footer-col'>
           <ul className='footer-list'>
-            <li className='footer-item'> <a target='_blank' href='' className='footer-link'>Chính sách</a></li>
-            <li className='footer-item'><a target='_blank' href='' className='footer-link'>Quyền lợi</a></li>
-            <li className='footer-item'><a target='_blank' href='' className='footer-link'>Đóng góp</a></li>
-            <li className='footer-item'><a target='_blank' href='' className='footer-link'>Trợ giúp</a></li>
+            <li className='footer-item'> <Link target='_blank' href='' className='footer-link'>Chính sách</Link></li>
+            <li className='footer-item'><Link target='_blank' href='' className='footer-link'>Quyền lợi</Link></li>
+            <li className='footer-item'><Link target='_blank' href='' className='footer-link'>Đóng góp</Link></li>
+            <li className='footer-item'><Link target='_blank' href='' className='footer-link'>Trợ giúp</Link></li>
           </ul>
         </div>
         <div className='footer-col'>
         <ul className='footer-list'>
             <li className='footer-item'>
-              <a target='_blank' href='https://www.facebook.com/xuanduong01vn' className='footer-link'>
+              <Link target='_blank' href='https://www.facebook.com/xuanduong01vn' className='footer-link'>
                 <FontAwesomeIcon icon={faFacebook}/>Xuan Duong
-              </a>
+              </Link>
             </li>
             <li className='footer-item'>
-              <a target='_blank' href='tel:+84353434036' className='footer-link'>
+              <Link target='_blank' href='tel:+84353434036' className='footer-link'>
                 <FontAwesomeIcon icon={faPhone} />0353434036
-              </a>
+              </Link>
             </li>
             <li className='footer-item'>
-              <a target='_blank' href='mailto:xuanduong01vn@gmail.com' className='footer-link'>
+              <Link target='_blank' href='mailto:xuanduong01vn@gmail.com' className='footer-link'>
                 <FontAwesomeIcon icon={faEnvelope} />xuanduong01vn@gmail.com
-              </a>
+              </Link>
             </li>
             <li className='footer-item'>
-              <a target='_blank' href='https://github.com/xuanduong01vn' className='footer-link'>
+              <Link target='_blank' href='https://github.com/xuanduong01vn' className='footer-link'>
                 <FontAwesomeIcon icon={faGithub} />xuanduong01vn
-              </a>
+              </Link>
               </li>
           </ul>
         </div>

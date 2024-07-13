@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useContext} from 'react';
 import axios from 'axios';
+import { AuthContext } from '../../AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faEyeSlash,
@@ -9,7 +10,8 @@ import {
 
 function AccountPassword(){
 
-  const id='66669b9c646d48fe74ba397b';
+  const authToken = useContext(AuthContext);
+  const id=authToken.idCurrentUser;
   const [hidePassword, setHidePassword] = useState(false);
   const [typeInput, setTypeInput] = useState('');
   const [userPwd, setUserPwd] = useState('');
@@ -47,7 +49,7 @@ function AccountPassword(){
     .catch(err=>{
       console.log(err.message);
     })
-  },[userPwd]);
+  },[userPwd, success]);
 
   function handleHidePassword(input){
     setInputType(inputType[input]=='password'?
@@ -106,7 +108,7 @@ function AccountPassword(){
       <div className='password-container'>
         <div className='password-item' style={{ display: 'none' }}>
           <div className='password-type-box'>
-            <input type="password" id="current-password" name="current-password" autocomplete="new-password" style={{ display: 'none' }} />
+            <input type="password" id="current-password" name="current-password" autoComplete="new-password" style={{ display: 'none' }} />
           </div>
         </div>
         <div className='password-item'>

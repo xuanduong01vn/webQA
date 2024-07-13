@@ -1,18 +1,20 @@
 import styled from 'styled-components';
-import React, { useEffect, useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import React, { useEffect, useState, useRef, useContext } from 'react';
+import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass,
           faPen,
           faBell
  } from '@fortawesome/free-solid-svg-icons';
-
- 
+ import { AuthContext } from '../../AuthContext';
 
 function HeaderAdmin(){
 
   const [openInput, setOpenInput] = useState(false);
   const [namePopup, setNamePopup] = useState(null);
   const [searchText, setSearchText] = useState('');
+  const currentToken = useContext(AuthContext);
 
   const inputRef = useRef();
   const popupRefs = useRef({});
@@ -35,6 +37,12 @@ function HeaderAdmin(){
   const handleCloseSearchBox =()=>{
     if(openInput)
       setOpenInput(false);
+  }
+
+  function handleLogOut(){
+    Cookies.set('iduser','')
+    Cookies.set('user','')
+    Cookies.set('token','')
   }
 
   useEffect(() => {
@@ -79,7 +87,7 @@ function HeaderAdmin(){
         <Wrapper>
           <div className='header-container'>
             <div className='header-bar'>
-              <a href='/' className='header-title'>QAx</a>
+              <Link to='/' className='header-title'>QAx</Link>
               <div id='search-container'>
                 <input id='search-box' type='text' placeholder='Tìm kiếm trên QAx'/>
                 <button id='search-btn'>
@@ -93,14 +101,14 @@ function HeaderAdmin(){
                       <div ref={el => (popupRefs.current['create'] = el)} className={namePopup=='create'?'header-pop-up-open':'header-pop-up'}>
                         <ul className='header-pop-up-list'>
                           <li className='header-pop-up-item'>
-                            <a href='/create/post' className='header-pop-up-link create-blog'>
+                            <Link to={currentToken.idCurrentUser?'/create/post':'/login'} className='header-pop-up-link create-blog'>
                               Tạo bài viết
-                            </a>
+                            </Link>
                           </li>
                           <li className='header-pop-up-item'>
-                            <a href='/create/question' className='header-pop-up-link create-question'>
+                            <Link to='/create/question' className='header-pop-up-link create-question'>
                               Đặt câu hỏi
-                            </a>
+                            </Link>
                           </li>
                         </ul>
                       </div>
@@ -117,31 +125,30 @@ function HeaderAdmin(){
                 <div className='user-container-item'>
                   <button ref={el => (btnRefs.current['user'] = el)} className='user-bar user-btn'>
                     <div className='user-avatar'>
-                      <img src='https://www.vietnamfineart.com.vn/wp-content/uploads/2023/07/anh-avatar-dep-cho-con-gai-1.jpg' 
-                      alt='user avatar' className='user-image'/>
+                      <img src={currentToken.userLogin?.avatar} alt='user avatar' className='user-image'/>
                     </div>
-                    <p className='user-name'>username</p>
+                    <p className='user-name'>{currentToken.userLogin?.username}</p>
                       <div ref={el => (popupRefs.current['user'] = el)} className={namePopup=='user'?'header-pop-up-open':'header-pop-up'}>
                       <ul className='header-pop-up-list'>
                         <li className='header-pop-up-item'>
-                          <a href='/account/profile' className='header-pop-up-link user-profile'>
+                          <Link to='/account/profile' className='header-pop-up-link user-profile'>
                             Trang cá nhân
-                          </a>
+                          </Link>
                         </li>
                         <li className='header-pop-up-item'>
-                          <a href='/user' className='header-pop-up-link blog-manage'>
+                          <Link to={`/user/${currentToken.idCurrentUser}`} className='header-pop-up-link blog-manage'>
                             Trang hoạt động
-                          </a>
+                          </Link>
                         </li>
                         <li className='header-pop-up-item'>
-                          <a href='/account/post' className='header-pop-up-link blog-manage'>
+                          <Link to='/account/post' className='header-pop-up-link blog-manage'>
                             Quản lý bài viết
-                          </a>
+                          </Link>
                         </li>
                         <li className='header-pop-up-item'>
-                          <a href='/' onClick={handleLogOut} className='header-pop-up-link log-out'>
+                          <Link to='/' onClick={handleLogOut} className='header-pop-up-link log-out'>
                             Đăng xuất
-                          </a>
+                          </Link>
                         </li>
                       </ul>
                     </div>

@@ -66,7 +66,7 @@ function PostList(props){
     .catch((err)=>{
       console.log(err.message);
     });
-  },[location.search]);  
+  },[location.search, idUser]);  
 
   useEffect(() => {
     const endOffset = itemOffset + itemsPerPage;

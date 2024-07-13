@@ -1,9 +1,10 @@
 import styled from 'styled-components';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate, Link } from 'react-router-dom'; 
 import ReactPaginate from 'react-paginate';
 import AssetsItem from './AssetItem';
+import { AuthContext } from '../../AuthContext';
 
 const itemsPerPage = 6;
 

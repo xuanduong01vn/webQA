@@ -1,26 +1,32 @@
 import styled from 'styled-components';
-import React, {useEffect, useState, useRef } from 'react';
+import React, {useEffect, useState, useRef, useContext } from 'react';
 import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
+import { AuthContext } from '../../AuthContext';
 
 import PostReply from './PostReply';
 
 function CommentItem(props){
 
+  const authToken = useContext(AuthContext);
   const {comment, author, deleteComment, post, openReply} =props;
   const [classInput, setClassInput] = useState('');
   const [isDeletedPost, setIsDeletedPost]=useState(comment.isDeleted);
   const [inputComment, setInputComment] = useState('');
   const [valueComment, setValueComment] = useState({
     content: '',
-    idUser: '66669b9c646d48fe74ba397b',
+    idUser: authToken.idCurrentUser,
     idPost: comment.idPost,
     createAt: new Date(),
     idParent: '',
     isDeleted: false,
   });
 
+  const navigate = useNavigate();
+
+  console.log(author);
   //khi 
   useEffect(()=>{
     if(comment.content.lenght>0){
@@ -30,7 +36,13 @@ function CommentItem(props){
 
   //mở input tạo mới reply
   function openReplyBox(e){
-    openReply(comment._id)
+    if(authToken.idCurrentUser){
+      openReply(comment._id);
+    }
+    else{
+      navigate('/login');
+    }
+    
   }
 
   //lấy giá trị nhập vào mỗi khi thay đổi
@@ -57,6 +69,16 @@ function CommentItem(props){
     setClassInput(id);
     setInputComment(comment.content);
   }
+
+  // useEffect(()=>{
+  //   const getAuhtor= async()=>{
+  //     try {
+  //       const responce = await axios.get(`http://localhost:9999/accounts/${id}`)
+  //     } catch (err) {
+  //         console.log(err.message);
+  //     }
+  //   }
+  // },[])
 
   //focus vào textarea và đặt vị trí con trỏ vào cuối văn bản
   useEffect(() => {
@@ -87,26 +109,26 @@ function CommentItem(props){
       {isDeletedPost
       ?(<div key={comment._id} className='comment-item'>
         <div className='comment-item-created'>
-            <img src={author?.avatar} 
-            alt='' className='comment-item-user-avatar' />
-            <div className='comment-item-user-created'>
-              <a href={`/user/${comment.idUser}`} className='comment-item-username'>{author?.username}</a>
-              <span className='comment-item-created-time'> bình luận lúc {formatTime(comment.createAt)}</span>
-            </div>
+          <div className='comment-item-user-avatar'>
+            <img src={author?.avatar} alt='user avatar' className='comment-item-user-image'/>
           </div>
-          <div className='comment-item-content'>
-            <span style={{color:'var(--shadow-color)'}}>Bình luận này đã bị xóa!</span>
+          <div className='comment-item-user-created'>
+            <Link to={`/user/${comment.idUser}`} className='comment-item-username'>{author?.username}</Link>
+            <span className='comment-item-created-time'> bình luận lúc {formatTime(comment.createAt)}</span>
           </div>
+        </div>
+        <div className='comment-item-content'>
+          <span style={{color:'var(--shadow-color)'}}>Bình luận này đã bị xóa!</span>
+        </div>
       </div>)
       :(
         <div key={comment._id} className='comment-item'>
           <div className='comment-item-created'>
             <div className='comment-item-user-avatar'>
-              <img src='https://www.vietnamfineart.com.vn/wp-content/uploads/2023/07/anh-avatar-dep-cho-con-gai-1.jpg' 
-              alt='user avatar' className='comment-item-user-image'/>
+              <img src={author?.avatar} alt='user avatar' className='comment-item-user-image'/>
             </div>
             <div className='comment-item-user-created'>
-              <a href={`/user/${comment.idUser}`} className='comment-item-username'>{author?.username}</a>
+              <Link to={`/user/${comment.idUser}`} className='comment-item-username'>{author?.username}</Link>
               <span className='comment-item-created-time'> bình luận lúc {formatTime(comment.createAt)}</span>
             </div>
           </div>
@@ -128,17 +150,21 @@ function CommentItem(props){
                 onClick={openReplyBox}>
                   Trả lời
                 </button>
-                <button onClick={()=>{onEditComment(comment._id)}} className='comment-item-btn'>
-                  Sửa
-                </button>
-                <button 
-                onClick={()=>{
-                  deleteComment(comment._id);
-                  setIsDeletedPost(true);
-                }} 
-                className='comment-item-btn'>
-                  Xóa
-                </button>
+                {comment.idUser == authToken.idCurrentUser &&
+                  <button onClick={()=>{onEditComment(comment._id)}} className='comment-item-btn'>
+                    Sửa
+                  </button>
+                }
+                {comment.idUser == authToken.idCurrentUser && 
+                  <button 
+                    onClick={()=>{
+                      deleteComment(comment._id);
+                      setIsDeletedPost(true);
+                    }} 
+                    className='comment-item-btn'>
+                      Xóa
+                  </button>
+                }
               </div>)
             :(<div className='comment-item-action'>
                 <button className='comment-item-btn'

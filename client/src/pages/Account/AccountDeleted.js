@@ -3,18 +3,20 @@ import AssetsPost from '../../components/AccountAssets/AssetsPost';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import styled from 'styled-components';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
+import { AuthContext } from '../../AuthContext';
 
 function AccountDeleted(){
   document.title='My deleted';
+  const authToken = useContext(AuthContext);
   const [posts, setPosts] = useState(null);
   const [accs, setAccs] = useState(null);
 
   useEffect(()=>{
     const getPost= async(req,res)=>{
       try {
-        const response = await axios.get(`http://localhost:9999/posts/?isDeleted=false`)
+        const response = await axios.get(`http://localhost:9999/posts/?isDeleted=true&idAuthor=${authToken.idCurrentUser}`)
         return response.data;
       } catch (err) {
         console.log(err.message);

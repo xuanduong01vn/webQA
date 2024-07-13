@@ -3,18 +3,21 @@ import AssetsPost from '../../components/AccountAssets/AssetsPost';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import styled from 'styled-components';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
+import { AuthContext } from '../../AuthContext';
 
 function AccountPost(){
   document.title='My post';
   const [posts, setPosts] = useState(null);
   const [accs, setAccs] = useState(null);
 
+  const authToken = useContext(AuthContext);
+
   useEffect(()=>{
     const getPost= async(req,res)=>{
       try {
-        const response = await axios.get(`http://localhost:9999/posts/?isDeleted=false`)
+        const response = await axios.get(`http://localhost:9999/posts/?isDeleted=false&idAuthor=${authToken.idCurrentUser}`)
         return response.data;
       } catch (err) {
         console.log(err.message);

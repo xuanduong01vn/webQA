@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBookmark,
@@ -75,13 +76,13 @@ function PostItem(props){
       <div className='post-item-cover'>
         <div className='post-item-user'>
           <div className='post-item-author'>
-            <a href={`/user/${author?._id}`} className='post-item-author-info'>
+            <Link to={`/user/${author?._id}`} className='post-item-author-info'>
               <div className='post-author-avatar'>
                 <img src={author?.avatar} 
                 alt='user avatar' className='post-author-image'/>
               </div>
               <p className='post-author-name'>{author?.username}</p>
-            </a>
+            </Link>
             <span className='post-item-author-create'>{timeCreated}</span>
           </div>
           {/* <div className='post-item-action'>
@@ -91,9 +92,9 @@ function PostItem(props){
             </button>
           </div> */}
         </div>
-        <a href={`/post/${post._id}`} className='post-item-title'>
+        <Link to={`/post/${post._id}`} className='post-item-title'>
           <h3>{ post.title}</h3> 
-        </a>
+        </Link>
         <ul className='post-tags'>
           {post.listTag.map((tag, index)=>(
             <li key={index} className='post-tags-item'>#{tag}</li>

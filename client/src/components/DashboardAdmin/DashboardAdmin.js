@@ -122,7 +122,7 @@ function DashboardUser(){
       <div className='dashboard-post-container'>
         <div className='dashboard-add-new'>
           <h3>Quản lý quản trị viên</h3>
-          <a href='/dashboard/new-admin' target='_blank' className='dashboard-new-btn'>Thêm mới</a>
+          <Link to='/dashboard/new-admin' target='_blank' className='dashboard-new-btn'>Thêm mới</Link>
         </div>
         
         <div className='dashboard-filter'>
@@ -168,9 +168,9 @@ function DashboardUser(){
                 <td>{acc.email}</td>
                 <td>{formatTime(acc.createAt)}</td>
                 <td>
-                  <a href={`/dashboard/user/${acc._id}`} className='detail-item-btn'>
+                  <Link href={`/dashboard/user/${acc._id}`} className='detail-item-btn'>
                     Chi tiết
-                  </a>
+                  </Link>
                 </td>
               </tr>
             ))
