@@ -126,7 +126,7 @@ function HeaderAdmin(){
                 <div className='user-container-item'>
                   <button ref={el => (btnRefs.current['user'] = el)} className='user-bar user-btn'>
                     <div className='user-avatar'>
-                      <img src={currentToken.userLogin?.avatar} alt='user avatar' className='user-image'/>
+                      <img src={currentToken.userLogin?.avatar} alt='' className='user-image'/>
                     </div>
                     <p className='user-name'>{currentToken.userLogin?.username}</p>
                       <div ref={el => (popupRefs.current['user'] = el)} className={namePopup=='user'?'header-pop-up-open':'header-pop-up'}>
@@ -388,6 +388,7 @@ const Wrapper = styled.div`
     border-radius: 50%;
     margin-right: 6px;
     overflow: hidden;
+    background-color: var(--blur-color);
   }
 
   .user-image{

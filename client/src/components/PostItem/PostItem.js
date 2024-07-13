@@ -78,8 +78,7 @@ function PostItem(props){
           <div className='post-item-author'>
             <Link to={`/user/${author?._id}`} className='post-item-author-info'>
               <div className='post-author-avatar'>
-                <img src={author?.avatar} 
-                alt='user avatar' className='post-author-image'/>
+                <img src={author?.avatar} alt='' className='post-author-image'/>
               </div>
               <p className='post-author-name'>{author?.username}</p>
             </Link>
@@ -150,6 +149,7 @@ const Wrapper = styled.div`
       border-radius: 50%; 
       margin-right: 6px;
       overflow: hidden;
+      background-color: var(--blur-color);
     }  
     
     .post-author-image{

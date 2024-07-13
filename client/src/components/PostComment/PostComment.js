@@ -188,7 +188,7 @@ function PostComment(props){
           <div className='post-comment-type-box'>
             <div className='comment-current-user'>
               <div className='comment-current-user-avatar'>
-                <img src={authToken.userLogin.avatar} alt='user avatar' className='comment-current-user-image'/>
+                <img src={authToken.userLogin.avatar} alt='' className='comment-current-user-image'/>
               </div>
               <p className='comment-current-user-name'>{authToken.userLogin.username}</p>
             </div>
@@ -303,6 +303,7 @@ const Wrapper = styled.div`
     border-radius: 50%; 
     margin-right: 12px;
     overflow: hidden;
+    background-color: var(--blur-color);
   }
 
   .comment-current-user-image{

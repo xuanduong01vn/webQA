@@ -158,7 +158,7 @@ function PostContent(props){
                 <div className='post-content-user'>
                   <div className='post-content-author'>
                     <div className='post-author-avatar'>
-                      <img src={author?.avatar} alt='user avatar' className='post-author-image'/>
+                      <img src={author?.avatar} alt='' className='post-author-image'/>
                     </div>
                     <div className='post-content-created'>
                       <a href={`/user/${author?._id}`} className='post-author-name'>{author?.username}</a>
@@ -286,6 +286,7 @@ const Wrapper = styled.div`
     border-radius: 50%;
     margin-right: 12px;
     overflow: hidden;
+    background-color: var(--blur-color);
   }
 
   .post-author-image{

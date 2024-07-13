@@ -43,7 +43,7 @@ function PostReply(props){
         <div className='post-reply-type-box'>
         <div className='reply-current-user'>
           <div className='reply-current-user-avatar'>
-            <img src={authToken.userLogin.avatar} alt='user avatar' className='reply-current-user-image'/>
+            <img src={authToken.userLogin.avatar} alt='' className='reply-current-user-image'/>
           </div>
           <p className='reply-current-user-name'>{authToken.userLogin.username}</p>
         </div>
@@ -96,6 +96,7 @@ const Wrapper = styled.div`
     border-radius: 50%; 
     margin-right: 12px;
     overflow: hidden;
+    background-color: var(--blur-color);
   }
 
   .reply-current-user-image{

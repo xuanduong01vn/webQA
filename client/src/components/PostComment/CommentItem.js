@@ -110,7 +110,7 @@ function CommentItem(props){
       ?(<div key={comment._id} className='comment-item'>
         <div className='comment-item-created'>
           <div className='comment-item-user-avatar'>
-            <img src={author?.avatar} alt='user avatar' className='comment-item-user-image'/>
+            <img src={author?.avatar} alt='' className='comment-item-user-image'/>
           </div>
           <div className='comment-item-user-created'>
             <Link to={`/user/${comment.idUser}`} className='comment-item-username'>{author?.username}</Link>
@@ -125,7 +125,7 @@ function CommentItem(props){
         <div key={comment._id} className='comment-item'>
           <div className='comment-item-created'>
             <div className='comment-item-user-avatar'>
-              <img src={author?.avatar} alt='user avatar' className='comment-item-user-image'/>
+              <img src={author?.avatar} alt='' className='comment-item-user-image'/>
             </div>
             <div className='comment-item-user-created'>
               <Link to={`/user/${comment.idUser}`} className='comment-item-username'>{author?.username}</Link>
@@ -219,6 +219,7 @@ const Wrapper = styled.div`
     border-radius: 50%;
     margin-right: 12px;
     overflow: hidden;
+    background-color: var(--blur-color);
   }
 
   .comment-item-user-image{

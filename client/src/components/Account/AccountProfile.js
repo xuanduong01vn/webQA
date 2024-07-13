@@ -231,8 +231,7 @@ function AccountProfile(){
           <div className='profile-container'>
           <div className='profile-item'>
             <div className='profile-avatar'>
-              <img src={avatarImg}
-              alt='Ảnh đại diện' className='avatar-image'/>
+              <img src={avatarImg} className='avatar-image'/>
             </div>
             <input ref={inputFileRef} className='avatar-input' type='file' 
               onChange={(e)=>onChangeFile(e)}/>
@@ -341,6 +340,7 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: var(--shadow-color);
   }
 
   .avatar-image{
