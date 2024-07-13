@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass,
           faPen,
@@ -8,19 +8,25 @@ import { faMagnifyingGlass,
 import HeaderAdmin from '../../components/Header/HeaderDashboard';
 import DashboarLayout from '../../components/DashboardLayout/DashboardLayout';
 import DashboardAdmin from '../../components/DashboardAdmin/DashboardAdmin';
-
+import WarningAccess from '../../components/Warning/WaringAccess';
+import { AuthContext } from '../../AuthContext';
 
 function PageDashboardAdmin(){
   document.title='Dashboard admin';
+  const user=useContext(AuthContext);
   return (
     <Wrapper>
-      <div className='dashboard-admin-container'>
-        <HeaderAdmin/>
-        <div className='dashboard-admin-content'>
-          <DashboarLayout title='admin'/>
-          <DashboardAdmin/>
-        </div>
-      </div>
+      {
+        user.userLogin.idTypeAccount==2?
+        (<WarningAccess/>)
+        :(
+        <div className='dashboard-admin-container'>
+          <HeaderAdmin/>
+          <div className='dashboard-admin-content'>
+            <DashboarLayout title='admin'/>
+            <DashboardAdmin/>
+          </div>
+        </div>)}
     </Wrapper>
   )
 }

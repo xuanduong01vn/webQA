@@ -80,7 +80,8 @@ function HeaderAdmin(){
   }, [namePopup]);
 
   function handleLogOut(){
-    localStorage.setItem('auth-token', '');
+    Cookies.remove('iduser')
+    Cookies.remove('token')
   }
 
     return (    
@@ -372,12 +373,13 @@ const Wrapper = styled.div`
 
   .user-bar{
     display: flex;
-    justify-content: space-between;
     align-items: center;
     height: 100%;
     margin-right: 0;
     width: max-content;
     padding-right: 0;
+    min-width: 140px;
+    text-align: left;
   }
 
   .user-avatar{

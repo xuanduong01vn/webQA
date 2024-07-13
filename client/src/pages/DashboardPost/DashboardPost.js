@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera,
@@ -8,23 +8,28 @@ import { faCamera,
 import HeaderDashboard from '../../components/Header/HeaderDashboard.js';
 import DashboardLayout from '../../components/DashboardLayout/DashboardLayout.js';
 import DashboardPost from '../../components/DashboardPost/DashboardPost.js';
+import WarningAccess from '../../components/Warning/WaringAccess';
+import { AuthContext } from '../../AuthContext';
 
 const itemsPerPage = 10;
 
 function PageDashboardPost(){
   document.title='Dashboard post';
-  
+  const user=useContext(AuthContext);
 
   return (
     <Wrapper>
-      <div className='dashboard-admin-container'>
-        <HeaderDashboard/>
-        <div className='dashboard-admin-content'>
-          <DashboardLayout title='post'/>
-          <DashboardPost/>
-        </div>
-      </div>
-
+      {
+        user.userLogin.idTypeAccount==2?
+        (<WarningAccess/>)
+        :(
+        <div className='dashboard-admin-container'>
+          <HeaderDashboard/>
+          <div className='dashboard-admin-content'>
+            <DashboardLayout title='post'/>
+            <DashboardPost/>
+          </div>
+        </div>)}
     </Wrapper>
   )
 }

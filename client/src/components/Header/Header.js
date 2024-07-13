@@ -113,9 +113,8 @@ function Header(){
   }, [namePopup]);
 
   function handleLogOut(){
-    Cookies.set('iduser','')
-    Cookies.set('user','')
-    Cookies.set('token','')
+    Cookies.remove('iduser')
+    Cookies.remove('token')
   }
 
     return (    

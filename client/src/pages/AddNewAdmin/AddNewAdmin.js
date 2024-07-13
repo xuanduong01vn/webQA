@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass,
           faPen,
@@ -7,18 +7,24 @@ import { faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons';
 import HeaderAdmin from '../../components/Header/HeaderDashboard';
 import NewAdmin from '../../components/DashboardAdmin/DashboardNewAdmin';
-
+import WarningAccess from '../../components/Warning/WaringAccess';
+import { AuthContext } from '../../AuthContext';
 
 function AddNewAdmin(){
+  const user=useContext(AuthContext);
   document.title='Add new admin';
   return (
     <Wrapper>
-      <div className='dashboard-admin-container'>
+      {
+        user.userLogin.idTypeAccount==2?
+        (<WarningAccess/>)
+        :(<div className='dashboard-admin-container'>
         <HeaderAdmin/>
-        <div className='dashboard-admin-content'>
-          <NewAdmin/>
-        </div>
-      </div>
+          <div className='dashboard-admin-content'>
+            <NewAdmin/>
+          </div>
+        </div>)
+      }
     </Wrapper>
   )
 }
