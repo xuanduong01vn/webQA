@@ -10,7 +10,9 @@ const typeAccountSchema = new mongoose.Schema({
     required: true
   }
 }, 
-{ collection: 'typeAccount' }, 
+{ 
+  collection: 'typeAccount' 
+}, 
 {
   versionKey: false // loại bỏ __v khỏi các tài liệu
 })

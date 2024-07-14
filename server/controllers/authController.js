@@ -15,7 +15,7 @@ const authController={
       const userFound = await accountModel.findOne(req.body);
 
       if(userFound && email.trim().length>0 && password.trim().length>0){
-        const token = jwt.sign({ iduser: userFound._id }, process.env.TOKEN_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ iduser: userFound._id }, process.env.TOKEN_SECRET, { expiresIn: '7d' });
         // const cookieValue = JSON.stringify({ token, iduser });
         res.cookie('token', token, {
           httpOnly: true,
@@ -23,7 +23,6 @@ const authController={
           sameSite: 'strict',
         });
         res.cookie('iduser', userFound._id.toString());
-        res.cookie('user', JSON.stringify(userFound, null, 4));
         res.status(200).json({
           message: 'Login success',
           iduser: userFound._id,

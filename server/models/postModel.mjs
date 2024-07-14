@@ -38,6 +38,9 @@ const postSchema = new mongoose.Schema({
   isDeleted:{
     type: Boolean,
   },
+  engageRate:{
+    type: Number,
+  }
 }, 
 {
   versionKey: false // loại bỏ __v khỏi các tài liệu

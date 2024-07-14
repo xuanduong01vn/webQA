@@ -16,6 +16,8 @@ import tagRouter from './routers/tagRouter.js';
 import commentRouter from './routers/commentRouter.js';
 import fileRouter from './routers/fileRouter.js';
 import authRouter from './routers/authRouter.js';
+import markedRouter from './routers/markedRouter.js';
+import likedRouter from './routers/likedRouter.js';
 
 const app = express();
 const port = 9999;
@@ -53,8 +55,9 @@ app.use('/type-account', typeAccountRouter);
 app.use('/tags', tagRouter);
 app.use('/comments', commentRouter);
 app.use('/file', fileRouter);
-app.use('/login', authRouter)
-
+app.use('/login', authRouter);
+app.use('/marked', markedRouter);
+app.use('/liked', likedRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
