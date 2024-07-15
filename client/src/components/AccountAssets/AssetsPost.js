@@ -69,7 +69,7 @@ function AssetsPost(props){
   return (
     <Wrapper>
       <div className='post-list-container'>
-      <h2 className='post-container-title'>{`Bài viết (${posts.length})`}</h2>
+      <h2 className='post-container-title'>{`Bài viết (${posts?.length})`}</h2>
       {noQuestion&&
         <div className='post-list-alert'>
           <span>Chưa có bài viết nào</span>
@@ -82,8 +82,7 @@ function AssetsPost(props){
             <li key={p._id} className='post-item'>
             <AssetsItem author={authors.find(acc=>acc._id==p.idAuthor)} post={p}/>
           </li>
-          ))}
-          
+          ))} 
         </ul>
       }
       {currentPosts.length>itemsPerPage &&

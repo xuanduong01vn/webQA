@@ -143,6 +143,7 @@ function NewPost(){
     amountLiked: 0,
     amountMarked: 0,
     amountComment: 0,
+    engageRate: 0,
     idAuthor: userToken.idCurrentUser,
     createAt: new Date(),
     idTypePost: 1,

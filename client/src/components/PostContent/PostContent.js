@@ -31,6 +31,7 @@ function PostContent(props){
   const [openPopUp, setOpenPopUp] = useState(false);
   const [liked, setLiked] = useState(false);
   const [marked, setMarked] = useState(false);
+  const [markedPosts, setMarkedPosts] = useState(null);
   const userToken = useContext(AuthContext);
 
   useEffect(()=>{
@@ -57,6 +58,28 @@ function PostContent(props){
       console.log(err.message);
     });
   },[onIsDeleted])
+
+  useEffect(()=>{
+    const getPost= async(req,res)=>{
+      try {
+        const response = await axios.get(`http://localhost:9999/marked/?idAccount=${userToken.idCurrentUser}`);
+        console.log(response.data);
+        return response.data;
+        
+      } catch (err) {
+        console.log(err.message);
+      }
+    }
+    getPost()
+    .then(data=>{
+      if(data.length!=0){
+        setMarkedPosts(data[0]);
+      }
+    })
+    .catch(err=>{
+      console.log(err.message);
+    })
+  },[]);
 
   useEffect(()=>{
     if(postData && postData?.idAuthor){
@@ -95,16 +118,58 @@ function PostContent(props){
 
   //handle mark post
   function markPost(){
-    if(amountMarked!==null){
-      if(marked==false){
-        setAmountMarked(amountMarked+1);
-        setMarked(true);
-      }
-      else{
-        setAmountMarked(amountMarked-1);
-        setMarked(false);
-      }
+    if(!markedPosts){
+      axios.post(`http://localhost:9999/marked/`,{
+        idAccount: userToken.idCurrentUser,
+        markedList: [`${id}`],
+      })
+      .then(res=>{
+        console.log(res.data);
+        setMarkedPosts(res.data);
+      })
+    }else{
+      axios.put(`http://localhost:9999/marked/${markedPosts._id}`,{
+        markedList: [...markedPosts.markedList, `${id}`],
+      })
+      .then(res=>{
+        console.log(res.data.data);
+        setMarkedPosts(res.data.data);
+      })
     }
+    setAmountMarked(amountMarked+1);
+      axios.put(`http://localhost:9999/posts/${id}`,{
+        amountMarked: amountMarked+1,
+      })
+      .then(res=>{
+        console.log(res.data);
+      })
+    // setMarked(true);
+    // if(marked==false){
+      //   setAmountMarked(amountMarked+1);
+      //   setMarked(true);
+      // }
+      // else{
+      //   setAmountMarked(amountMarked-1);
+      //   setMarked(false);
+      // }
+  }
+
+  function unmarkPost(){
+      axios.put(`http://localhost:9999/marked/${markedPosts._id}`,{
+        markedList: markedPosts.markedList.filter(p=>p!=`${id}`),
+      })
+      .then(res=>{
+        console.log(res.data);
+        setMarkedPosts(res.data.data);
+      })
+    setAmountMarked(amountMarked-1);
+      axios.put(`http://localhost:9999/posts/${id}`,{
+        amountMarked: amountMarked-1,
+      })
+      .then(res=>{
+        console.log(res);
+      })
+    // setMarked(false);
   }
 
   var timeCreated;
@@ -177,15 +242,17 @@ function PostContent(props){
                       </button>
                     }
                     <p className='marked-action-ammount'>{amountMarked}</p>
-                    {!marked ?
+                    {(markedPosts?.markedList?.indexOf(id)!==-1 && markedPosts)
+                      ?
+                      <button onClick={unmarkPost} className='post-content-action-btn active'>
+                        <FontAwesomeIcon icon={faBookmarked}/>
+                      </button>
+                      :
                       <button onClick={markPost} className='post-content-action-btn'>
                         <FontAwesomeIcon icon={faBookmark}/>
                       </button>
-                    :
-                      <button onClick={markPost} className='post-content-action-btn active'>
-                        <FontAwesomeIcon icon={faBookmarked}/>
-                      </button>
-                    } 
+                    }
+                      
                     
                   </div>
                 </div>

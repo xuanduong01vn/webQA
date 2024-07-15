@@ -3,18 +3,39 @@ import AssetsPost from '../../components/AccountAssets/AssetsPost';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import styled from 'styled-components';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
+import { AuthContext } from '../../AuthContext';
 
 function AccountMarked(){
   document.title='My marked';
+  const [markedPosts, setMarkedPosts] = useState(null);
   const [posts, setPosts] = useState(null);
   const [accs, setAccs] = useState(null);
+  const userToken = useContext(AuthContext);
+
+  useEffect(()=>{
+    const getMarkedPost= async(req,res)=>{
+      try {
+        const response = await axios.get(`http://localhost:9999/marked/?idAccount=${userToken.idCurrentUser}`)
+        return response.data;
+      } catch (err) {
+        console.log(err.message);
+      }
+    }
+    getMarkedPost()
+    .then(data=>{
+      setMarkedPosts(data[0].markedList);
+    })
+    .catch(err=>{
+      console.log(err.message);
+    })
+  },[]);
 
   useEffect(()=>{
     const getPost= async(req,res)=>{
       try {
-        const response = await axios.get(`http://localhost:9999/posts/?isDeleted=false`)
+        const response = await axios.get(`http://localhost:9999/posts`)
         return response.data;
       } catch (err) {
         console.log(err.message);
@@ -53,8 +74,8 @@ function AccountMarked(){
       <div className='account-container'>
         <div className='account-layout'>
           <AssetsLayout itemActive={'Đã lưu'}/>
-          {posts && accs && (
-            <AssetsPost posts={posts} authors={accs}/>
+          {posts && accs && markedPosts &&(
+            <AssetsPost posts={posts?.filter(p=>markedPosts.includes(p._id))} authors={accs}/>
           )}
         </div>
       </div>
