@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import Account from './accountModel.mjs';
 
 const markedSchema = new mongoose.Schema({
-  idUser:{
+  idAccount:{
     type: mongoose.Schema.Types.ObjectId,
     ref: Account,
   },

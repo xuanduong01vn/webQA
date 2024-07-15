@@ -7,7 +7,10 @@ import jwt from 'jsonwebtoken';
 const markedController ={
   getAllMarked: async(req, res)=>{
     try {
-      let features= new APIfeatures(markedModel.find(), req.query);
+      let features= new APIfeatures(markedModel.find(), req.query)
+        .sorting()
+        .search()
+        .filtering();
       const allMarked = await features.query;
       res.status(200).json(allMarked);
     } catch (err) {

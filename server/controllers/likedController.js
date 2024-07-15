@@ -7,7 +7,10 @@ import jwt from 'jsonwebtoken';
 const likedController ={
   getAllLiked: async(req, res)=>{
     try {
-      let features= new APIfeatures(likedModel.find(), req.query);
+      let features= new APIfeatures(likedModel.find(), req.query)
+        .sorting()
+        .search()
+        .filtering();
       const allLiked = await features.query;
       res.status(200).json(allLiked);
     } catch (err) {
