@@ -13,11 +13,12 @@ import PostReply from './PostReply.js';
 import { AuthContext } from '../../AuthContext.js';
 
 function PostComment(props){
-
+  const commentPoint =3;
   const {post}= props;
   const authToken = useContext(AuthContext);
   const [inputComment, setInputComment] = useState('');
   const [amountCmt, setAmountCmt] = useState(post?.amountComment);
+  const [engageRate, setEngageRate] = useState(post.engageRate);
   const [listComment, setListComment] = useState([]);
   const [listUser, setListUser] = useState([]);
   const [idCmt, setIdCmt] = useState('');
@@ -108,8 +109,12 @@ function PostComment(props){
         console.log(err.message);
       })
 
-      //update số lượng comment chủa bài viết
-      axios.put(`http://localhost:9999/posts/${post._id}`,{amountComment: amountCmt+1})
+      //update số lượng comment của bài viết
+      axios.put(`http://localhost:9999/posts/${post._id}`,
+      {
+        amountComment: amountCmt+1,
+        engageRate: engageRate+commentPoint,
+      })
       .then(res=>{
         console.log(res.data);
         setAmountCmt(res.data.data.amountComment);
@@ -132,7 +137,11 @@ function PostComment(props){
       })
 
       //update số lượng comment chủa bài viết
-      axios.put(`http://localhost:9999/posts/${post._id}`,{amountComment: amountCmt+1})
+      axios.put(`http://localhost:9999/posts/${post._id}`,
+      {
+        amountComment: amountCmt+1,
+        engageRate: engageRate+commentPoint,
+      })
       .then(res=>{
         console.log(res.data);
         setAmountCmt(res.data.data.amountComment);
@@ -155,7 +164,11 @@ function PostComment(props){
     })
 
     //update số lượng comment của bài viết
-    axios.put(`http://localhost:9999/posts/${post._id}`,{amountComment: amountCmt-1})
+    axios.put(`http://localhost:9999/posts/${post._id}`,
+    {
+      amountComment: amountCmt-1,
+      engageRate: engageRate-commentPoint,
+    })
     .then(res=>{
       console.log(res.data.data);
       setAmountCmt(res.data.data.amountComment);

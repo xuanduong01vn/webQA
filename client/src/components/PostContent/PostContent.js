@@ -22,16 +22,19 @@ import PostComment from '../PostComment/PostComment.js';
 function PostContent(props){
 
   let { id } = useParams();
-  
+  const likePoint=1;
+  const markPoint=2;
   const {onDataReceived, onDeletePost, onIsDeleted} = props;
   const [postData, setPostData] = useState({});
   const [author, setAuthor] = useState({});
   const [amountLiked, setAmountLiked] = useState(0);
   const [amountMarked, setAmountMarked] = useState(0);
+  const [engageRate, setEngageRate] = useState(0);
   const [openPopUp, setOpenPopUp] = useState(false);
   const [liked, setLiked] = useState(false);
   const [marked, setMarked] = useState(false);
   const [markedPosts, setMarkedPosts] = useState(null);
+  const [likedPosts, setLikedPosts] = useState(null);
   const userToken = useContext(AuthContext);
 
   useEffect(()=>{
@@ -53,6 +56,7 @@ function PostContent(props){
         isDeleted: data.isDeleted,});
       setAmountLiked(data.amountLiked);
       setAmountMarked(data.amountMarked);
+      setEngageRate(data.engageRate);
     })
     .catch((err)=>{
       console.log(err.message);
@@ -62,10 +66,10 @@ function PostContent(props){
   useEffect(()=>{
     const getPost= async(req,res)=>{
       try {
-        const response = await axios.get(`http://localhost:9999/marked/?idAccount=${userToken.idCurrentUser}`);
-        console.log(response.data);
-        return response.data;
-        
+        if(userToken.idCurrentUser){
+          const response = await axios.get(`http://localhost:9999/marked/?idAccount=${userToken.idCurrentUser}`);
+          return response.data;
+        }
       } catch (err) {
         console.log(err.message);
       }
@@ -74,6 +78,28 @@ function PostContent(props){
     .then(data=>{
       if(data.length!=0){
         setMarkedPosts(data[0]);
+      }
+    })
+    .catch(err=>{
+      console.log(err.message);
+    })
+  },[]);
+
+  useEffect(()=>{
+    const getPost= async(req,res)=>{
+      try {
+        if(userToken.idCurrentUser){
+          const response = await axios.get(`http://localhost:9999/liked/?idAccount=${userToken.idCurrentUser}`);
+          return response.data;
+        }
+      } catch (err) {
+        console.log(err.message);
+      }
+    }
+    getPost()
+    .then(data=>{
+      if(data.length!=0){
+        setLikedPosts(data[0]);
       }
     })
     .catch(err=>{
@@ -102,26 +128,15 @@ function PostContent(props){
     }
   },[postData])
 
-  //handle like post
-  function likePost(){
-    if(amountLiked!==null){
-      if(liked==false){
-        setAmountLiked(amountLiked+1);
-        setLiked(true);
-      }
-      else{
-        setLiked(false);
-        setAmountLiked(amountLiked-1);
-      }
-    }
-  }
-
   //handle mark post
   function markPost(){
     if(!markedPosts){
       axios.post(`http://localhost:9999/marked/`,{
         idAccount: userToken.idCurrentUser,
-        markedList: [`${id}`],
+        markedList: [{
+          idPost: `${id}`,
+          markedAt: new Date(),
+        }],
       })
       .then(res=>{
         console.log(res.data);
@@ -129,7 +144,11 @@ function PostContent(props){
       })
     }else{
       axios.put(`http://localhost:9999/marked/${markedPosts._id}`,{
-        markedList: [...markedPosts.markedList, `${id}`],
+        markedList: [...markedPosts.markedList,  
+          {
+            idPost: `${id}`,
+            markedAt: new Date(),
+          }],
       })
       .then(res=>{
         console.log(res.data.data);
@@ -143,20 +162,11 @@ function PostContent(props){
       .then(res=>{
         console.log(res.data);
       })
-    // setMarked(true);
-    // if(marked==false){
-      //   setAmountMarked(amountMarked+1);
-      //   setMarked(true);
-      // }
-      // else{
-      //   setAmountMarked(amountMarked-1);
-      //   setMarked(false);
-      // }
   }
 
   function unmarkPost(){
       axios.put(`http://localhost:9999/marked/${markedPosts._id}`,{
-        markedList: markedPosts.markedList.filter(p=>p!=`${id}`),
+        markedList: markedPosts.markedList.filter(p=>p.idPost!=`${id}`),
       })
       .then(res=>{
         console.log(res.data);
@@ -169,8 +179,62 @@ function PostContent(props){
       .then(res=>{
         console.log(res);
       })
-    // setMarked(false);
   }
+
+  //handle like post
+  function likePost(){
+    if(!likedPosts){
+      axios.post(`http://localhost:9999/liked/`,{
+        idAccount: userToken.idCurrentUser,
+        likedList: [{
+          idPost: `${id}`,
+          likedAt: new Date(),
+        }],
+      })
+      .then(res=>{
+        console.log(res.data);
+        setLikedPosts(res.data);
+      })
+    }else{
+      axios.put(`http://localhost:9999/liked/${likedPosts._id}`,{
+        likedList: [...likedPosts.likedList, 
+          {
+            idPost: `${id}`,
+            likedAt: new Date(),
+          }],
+      })
+      .then(res=>{
+        console.log(res.data.data);
+        setLikedPosts(res.data.data);
+      })
+    }
+    setAmountLiked(amountLiked+1);
+      axios.put(`http://localhost:9999/posts/${id}`,{
+        amountLiked: amountLiked+1,
+        engageRate: engageRate+likePoint,
+      })
+      .then(res=>{
+        console.log(res.data);
+      })
+  }
+
+  function unlikePost(){
+    axios.put(`http://localhost:9999/liked/${likedPosts._id}`,{
+      likedList: likedPosts.likedList.filter(p=>p.idPost!=`${id}`),
+    })
+    .then(res=>{
+      console.log(res.data);
+      setLikedPosts(res.data.data);
+    })
+  setAmountLiked(amountLiked-1);
+    axios.put(`http://localhost:9999/posts/${id}`,{
+      amountLiked: amountLiked-1,
+      engageRate: engageRate-likePoint,
+    })
+    .then(res=>{
+      console.log(res);
+    })
+}
 
   var timeCreated;
   const now = new Date();
@@ -232,17 +296,18 @@ function PostContent(props){
                   </div>
                   <div className='post-content-action'>
                     <p className='liked-action-ammount'>{amountLiked}</p>
-                    {!liked ?
+                    {(likedPosts?.likedList?.find(p=>(p.idPost==id)) && likedPosts)
+                      ?
+                      <button onClick={unlikePost} className='post-content-action-btn active'>
+                        <FontAwesomeIcon icon={faStared}/>
+                      </button>
+                      :
                       <button onClick={likePost} className='post-content-action-btn'>
                         <FontAwesomeIcon icon={faStar}/>
                       </button>
-                    :
-                      <button onClick={likePost} className='post-content-action-btn active'>
-                        <FontAwesomeIcon icon={faStared}/>
-                      </button>
                     }
                     <p className='marked-action-ammount'>{amountMarked}</p>
-                    {(markedPosts?.markedList?.indexOf(id)!==-1 && markedPosts)
+                    {(markedPosts?.markedList?.find(p=>p.idPost==id) && markedPosts)
                       ?
                       <button onClick={unmarkPost} className='post-content-action-btn active'>
                         <FontAwesomeIcon icon={faBookmarked}/>

@@ -26,6 +26,7 @@ function AssetsLayout(props){
   const navbarItems=[
     {path:'/account/post', title: 'Bài viết'},
     {path:'/account/deleted', title: 'Thùng rác'},
+    {path:'/account/liked', title: 'Đã thích'},
     {path:'/account/marked', title: 'Đã lưu'},
   ]
 

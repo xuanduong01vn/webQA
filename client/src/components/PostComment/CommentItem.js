@@ -26,7 +26,6 @@ function CommentItem(props){
 
   const navigate = useNavigate();
 
-  console.log(author);
   //khi 
   useEffect(()=>{
     if(comment.content.lenght>0){

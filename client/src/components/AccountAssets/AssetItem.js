@@ -12,7 +12,7 @@ import {
 }from '@fortawesome/free-solid-svg-icons'
 
 function AccountPostItem(props){
-  const {post, author} = props;
+  const {post, author, time } = props;
 
 
   const now = new Date();
@@ -39,19 +39,19 @@ function AccountPostItem(props){
               {author?.username}
             </Link>
           </div>
-          <span className='uestion-item-author-ask'> đã đăng lúc {formatTime(post.createAt)}</span>
+          <span className='uestion-item-author-ask'>{formatTime(post.createAt || post.markedAt || post.likedAt)}</span>
         </div>
         
         <div className='question-item-interact'>
-          <div className='question-item-likes'>
+          {/* <div className='question-item-likes'>
             <FontAwesomeIcon icon={faStar} />{post.amountLiked}
-          </div>
+          </div> */}
           {/* <div className='question-item-dislikes'>
             <FontAwesomeIcon icon={faThumbsDown} />6
           </div> */}
-          <div className='question-item-comments'>
+          {/* <div className='question-item-comments'>
             <FontAwesomeIcon icon={faComment} />{post.amountComment}
-          </div>
+          </div> */}
         </div>
       </div>
     </Wrapper>
@@ -83,6 +83,7 @@ const Wrapper = styled.div`
   .question-item-user{
     display: flex;
     margin: 4px 0;
+    justify-content: space-between;
     font-size: 14px;
 
     & p{

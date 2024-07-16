@@ -8,6 +8,7 @@ import User from '../pages/User/User.js';
 import AccountPost from '../pages/Account/AccountPost.js';
 import AccountDeleted from '../pages/Account/AccountDeleted.js';
 import AccountMarked from '../pages/Account/AccountMarked.js';
+import AccountLiked from '../pages/Account/AccountLiked.js';
 import CreatePost from '../pages/CreatePost/CreatePost.js';
 import HomeAdmin from '../pages/HomeAdmin/HomeAdmin.js';
 import PageDashboardPost from '../pages/DashboardPost/DashboardPost.js';
@@ -32,6 +33,7 @@ const routes=[
   {path: '/account/post', component: AccountPost},
   {path: '/account/deleted', component: AccountDeleted},
   {path: '/account/marked', component: AccountMarked},
+  {path: '/account/liked', component: AccountLiked},
   {path: '/create/post', component: CreatePost},
   {path: '/dashboard', component: HomeAdmin},
   {path: '/dashboard/posts/', component: PageDashboardPost},

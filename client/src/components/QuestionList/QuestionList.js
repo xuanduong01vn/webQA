@@ -19,7 +19,7 @@ function QuestionList(){
   useEffect(()=>{
     const getDataPost = async () => {
       try {
-        const response = await axios.get(`http://localhost:9999/posts/?isDeleted=false`);
+        const response = await axios.get(`http://localhost:9999/posts?sort=engageRate`);
         return await response.data;
       } catch (err) {
         console.log('Error fetching posts:', err.message);
@@ -28,7 +28,7 @@ function QuestionList(){
     };
     getDataPost()
     .then((data) => {
-      setPostList(data.sort((a, b) => b.amountComment - a.amountComment).slice(0,5));
+      setPostList(data.slice(0,5));
     })
     .catch((err)=>{
       console.log(err.message);

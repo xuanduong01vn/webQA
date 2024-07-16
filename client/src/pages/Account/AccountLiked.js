@@ -7,9 +7,9 @@ import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../AuthContext';
 
-function AccountMarked(){
-  document.title='My marked';
-  const [markedPosts, setMarkedPosts] = useState(null);
+function AccountLiked(){
+  document.title='My liked';
+  const [likedPosts, setLikedPosts] = useState(null);
   const [posts, setPosts] = useState(null);
   const [accs, setAccs] = useState(null);
   const userToken = useContext(AuthContext);
@@ -17,7 +17,7 @@ function AccountMarked(){
   useEffect(()=>{
     const getMarkedPost= async(req,res)=>{
       try {
-        const response = await axios.get(`http://localhost:9999/marked/?idAccount=${userToken.idCurrentUser}`)
+        const response = await axios.get(`http://localhost:9999/liked/?idAccount=${userToken.idCurrentUser}`)
         return response.data;
       } catch (err) {
         console.log(err.message);
@@ -26,10 +26,10 @@ function AccountMarked(){
     getMarkedPost()
     .then(data=>{
       if(data.length==0){
-        setMarkedPosts([]);
+        setLikedPosts([]);
       }
       else{
-        setMarkedPosts(data[0].markedList);
+        setLikedPosts(data[0].likedList);
       }
     })
     .catch(err=>{
@@ -73,15 +73,15 @@ function AccountMarked(){
     })
   },[]);
 
-  const postsUserMarked = markedPosts?.slice().reverse().map(m=>
+  const postsUserLiked = likedPosts?.slice().reverse().map(l=>
     {
-      const post = posts?.find(p=>p._id==m.idPost);
+      const post = posts?.find(p=>p._id==l.idPost);
       if(post){
         return {
           _id: post._id,
           title: post.title,
           idAuthor: post.idAuthor,
-          markedAt: m.markedAt
+          likedAt: l.likedAt
         }
       }
     }
@@ -92,9 +92,9 @@ function AccountMarked(){
       <Header/>
       <div className='account-container'>
         <div className='account-layout'>
-          <AssetsLayout itemActive={'Đã lưu'}/>
-          {postsUserMarked && accs &&(
-            <AssetsPost posts={postsUserMarked} authors={accs}/>
+          <AssetsLayout itemActive={'Đã thích'}/>
+          {posts && accs && likedPosts &&(
+            <AssetsPost posts={postsUserLiked} authors={accs}/>
           )}
         </div>
       </div>
@@ -103,7 +103,7 @@ function AccountMarked(){
   )
 }
 
-export default AccountMarked;
+export default AccountLiked;
 
 const Wrapper = styled.div`
 
