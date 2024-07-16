@@ -80,7 +80,7 @@ function AssetsPost(props){
         <ul className='post-list-box'>
           {currentItems.map(p=>(
             <li key={p._id} className='post-item'>
-            <AssetsItem author={authors.find(acc=>acc._id==p.idAuthor)} post={p}/>
+            <AssetsItem author={authors.find(acc=>acc._id==p?.idAuthor)} post={p}/>
           </li>
           ))} 
         </ul>

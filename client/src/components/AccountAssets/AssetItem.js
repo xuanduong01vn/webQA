@@ -29,31 +29,47 @@ function AccountPostItem(props){
 
   return(
     <Wrapper>
-      <div className='question-item-cover'>
-        <Link to={`/post/${post._id}`} className='question-item-title'>
-          <h3>{post?.title}</h3> 
-          </Link>
-        <div className='question-item-user'>
-          <div className='question-item-author'>
-            <Link to={`/user/${author?._id}`} className='question-item-author-info'>
-              {author?.username}
-            </Link>
+      {post?.isDeletedPost
+        ?(
+          <div className='question-item-cover'>
+            <div className='question-item-title'>
+              <h3 className='question-item-alert'>Bài viết đã bị xóa</h3> 
+            </div>
+            <div className='question-item-user'>
+              <div className='question-item-author'>
+              </div>
+              <span className='uestion-item-author-ask'>{formatTime(post.createAt || post.markedAt || post.likedAt)}</span>
+            </div>
           </div>
-          <span className='uestion-item-author-ask'>{formatTime(post.createAt || post.markedAt || post.likedAt)}</span>
-        </div>
-        
-        <div className='question-item-interact'>
-          {/* <div className='question-item-likes'>
-            <FontAwesomeIcon icon={faStar} />{post.amountLiked}
-          </div> */}
-          {/* <div className='question-item-dislikes'>
-            <FontAwesomeIcon icon={faThumbsDown} />6
-          </div> */}
-          {/* <div className='question-item-comments'>
-            <FontAwesomeIcon icon={faComment} />{post.amountComment}
-          </div> */}
-        </div>
-      </div>
+        )
+        :(
+          <div className='question-item-cover'>
+            <Link to={`/post/${post._id}`} className='question-item-title'>
+              <h3>{post?.title}</h3> 
+            </Link>
+            <div className='question-item-user'>
+              <div className='question-item-author'>
+                <Link to={`/user/${author?._id}`} className='question-item-author-info'>
+                  {author?.username}
+                </Link>
+              </div>
+              <span className='uestion-item-author-ask'>{formatTime(post.createAt || post.markedAt || post.likedAt)}</span>
+            </div>
+
+            <div className='question-item-interact'>
+              {/* <div className='question-item-likes'>
+                <FontAwesomeIcon icon={faStar} />{post.amountLiked}
+              </div> */}
+              {/* <div className='question-item-dislikes'>
+                <FontAwesomeIcon icon={faThumbsDown} />6
+              </div> */}
+              {/* <div className='question-item-comments'>
+                <FontAwesomeIcon icon={faComment} />{post.amountComment}
+              </div> */}
+            </div>
+          </div>
+        )
+      }
     </Wrapper>
   )
 }
@@ -93,6 +109,11 @@ const Wrapper = styled.div`
 
   .question-item-author{
     margin-right: 4px;
+  }
+
+  .question-item-alert{
+    font-weight: 600;
+    color: var(--shadow-color);
   }
 
   .question-item-author-info{

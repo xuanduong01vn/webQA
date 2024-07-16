@@ -81,6 +81,7 @@ function AccountMarked(){
           _id: post._id,
           title: post.title,
           idAuthor: post.idAuthor,
+          isDeletedPost: post.isDeleted,
           markedAt: m.markedAt
         }
       }
