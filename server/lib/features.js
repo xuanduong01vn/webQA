@@ -15,7 +15,9 @@ export function APIfeatures(query, queryString){
 
   this.sorting = () => {
     const sort = this.queryString.sort || '-_id';
-    this.query = this.query.sort(sort);
+    const order = this.queryString.order || 'desc';
+    const sortOrder = order === 'asc' ? '' : '-';
+    this.query = this.query.sort(`${sortOrder}${sort}`);
     return this;
   }
 
