@@ -18,6 +18,7 @@ import fileRouter from './routers/fileRouter.js';
 import authRouter from './routers/authRouter.js';
 import markedRouter from './routers/markedRouter.js';
 import likedRouter from './routers/likedRouter.js';
+import notifyRouter from './routers/notifyRouter.js';
 
 const app = express();
 const port = 9999;
@@ -58,6 +59,7 @@ app.use('/file', fileRouter);
 app.use('/login', authRouter);
 app.use('/marked', markedRouter);
 app.use('/liked', likedRouter);
+app.use('/notify', notifyRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
