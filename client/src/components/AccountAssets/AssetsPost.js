@@ -9,7 +9,7 @@ import { AuthContext } from '../../AuthContext';
 const itemsPerPage = 6;
 
 function AssetsPost(props){
-  const { posts, authors} = props;
+  const { posts, title, authors} = props;
   const location = useLocation();
   const navigate = useNavigate();
   const getQueryParams = (search) => {
@@ -69,7 +69,7 @@ function AssetsPost(props){
   return (
     <Wrapper>
       <div className='post-list-container'>
-      <h2 className='post-container-title'>{`Bài viết (${posts?.length})`}</h2>
+      <h2 className='post-container-title'>{`${title} (${posts?.length})`}</h2>
       {noQuestion&&
         <div className='post-list-alert'>
           <span>Chưa có bài viết nào</span>
@@ -79,8 +79,8 @@ function AssetsPost(props){
       {!noQuestion &&
         <ul className='post-list-box'>
           {currentItems.map(p=>(
-            <li key={p._id} className='post-item'>
-            <AssetsItem author={authors.find(acc=>acc._id==p?.idAuthor)} post={p}/>
+            <li key={p?._id} className='post-item'>
+            <AssetsItem author={authors?.find(acc=>acc?._id==p?.idAuthor)} post={p}/>
           </li>
           ))} 
         </ul>

@@ -95,7 +95,7 @@ function AccountLiked(){
         <div className='account-layout'>
           <AssetsLayout itemActive={'Đã thích'}/>
           {posts && accs && likedPosts &&(
-            <AssetsPost posts={postsUserLiked} authors={accs}/>
+            <AssetsPost posts={postsUserLiked} title={'Đã thích'} authors={accs}/>
           )}
         </div>
       </div>

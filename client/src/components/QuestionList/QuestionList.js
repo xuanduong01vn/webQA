@@ -19,7 +19,7 @@ function QuestionList(){
   useEffect(()=>{
     const getDataPost = async () => {
       try {
-        const response = await axios.get(`http://localhost:9999/posts?sort=engageRate`);
+        const response = await axios.get(`http://localhost:9999/posts?isDeleted=false&sort=engageRate`);
         return await response.data;
       } catch (err) {
         console.log('Error fetching posts:', err.message);

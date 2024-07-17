@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom'; 
 import Cookies from 'js-cookie';
+import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass,
           faPen,
@@ -21,6 +22,7 @@ function Header(){
 
   const [openInput, setOpenInput] = useState(false);
   const [namePopup, setNamePopup] = useState(null);
+  const [userNotify, setUserNotify] = useState(null);
   const [searchText, setSearchText] = useState(isSearch || '');
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const currentToken = useContext(AuthContext);
@@ -28,6 +30,24 @@ function Header(){
   const inputRef = useRef(null);
   const popupRefs = useRef({});
   const btnRefs = useRef({});
+
+  useEffect(()=>{
+    const getNotify = async(req,res)=>{
+      try {
+        const response = await axios.get(`http://localhost:9999/notify?idAccount=${currentToken?.idCurrentUser}`);
+        return response.data;
+      } catch (err) {
+        console.log(err.message);
+      }
+    }
+    getNotify()
+    .then(data=>{
+      setUserNotify(data);
+    })
+    .catch(err=>{
+      console.log(err.message);
+    })
+  },[]);
 
   function handleSearchKey(){
     if(searchText.trim().length>0){
@@ -168,11 +188,38 @@ function Header(){
                   </button>
                 </div>
                 <div className='user-container-item'>
-                  <button className='notify-btn user-btn'>
+                  <button className='notify-btn user-btn' ref={el => (btnRefs.current['notify'] = el)}>
                     <FontAwesomeIcon icon={faBell} className='notify-icon user-container-icon'/>
+                    {(userNotify && userNotify?.filter(n=>n?.isSeen==false)?.length>0) &&
                     <div className='notify-alert'>
-                      <p className='notify-alert-amount'>68</p>
+                        <span className='notify-alert-amount'>{userNotify?.filter(n=>n?.isSeen==false).length}</span>
                     </div>
+                    }
+                    <div ref={el => (popupRefs.current['notify'] = el)} className={namePopup=='notify'?'header-pop-up-open':'header-pop-up'}>
+                        {userNotify?.length==0 
+                        ?(
+                          <span className='header-notify-alert'>Chưa có thông báo nào</span>)
+                        :(
+                          <ul className='header-pop-up-list'>
+                            {userNotify?.map(n=>(
+                              <li key={n?._id} className='header-pop-up-item'>
+                                <Link to={n?.linkNotify} className='header-pop-up-link header-notify-item'>
+                                  <span className='header-notify-item-content'>
+                                    <div>{n?.contentNotify}</div>
+                                    <div>{n?.notifyAt}</div>
+                                  </span>
+                                  <span className={n?.isSeen?'header-notify-item-state seen':'header-notify-item-state'}></span>
+                                </Link>
+                              </li>
+                            ))
+                            }
+                          </ul>
+                          )
+                        }
+                        <Link to='/account/notify' className='header-pop-up-link see-all-notify'>
+                          Xem tất cả thông báo
+                        </Link>
+                      </div>
                   </button>
                 </div>
                 {!currentToken.idCurrentUser 
@@ -440,12 +487,12 @@ const Wrapper = styled.div`
   }
 
   .notify-btn{
-    position: relative;
+    /* position: relative; */
   }
 
   .notify-alert{
     position: absolute;
-    top: -4px;
+    top: 12px;
     left: 12px;
     background-color: var(--hightlight-color);
     color: var(--primary-color);
@@ -516,6 +563,7 @@ const Wrapper = styled.div`
     transition: var(--transition-time);
     transform-origin: 0 -12px;
     right: 0;
+    box-sizing: border-box;
   }
 
   
@@ -585,9 +633,54 @@ const Wrapper = styled.div`
     color: var(--text-color);
   }
 
+  .header-notify-alert{
+    width: 200px;
+    height: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+  }
+
+  .header-pop-up-link.header-notify-item{
+    padding: 12px;
+    width: 200px;
+    display: flex;
+    align-items: center;
+  }
+
+  .header-notify-item-content{
+    width: 100%;
+  }
+
+  .see-all-notify{
+    height: 40px;
+    box-sizing: border-box;
+    display: block;
+    border-top: 1px solid var(--shadow-color); 
+  }
+
+  .header-notify-item-state{
+    min-width: 8px;
+    height: 8px;
+    background-color: var(--hightlight-color);
+    box-sizing: border-box;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 12px;
+  }
+
+  .header-notify-item-state.seen{
+    background-color: transparent;
+  }
+
   .header-pop-up-link:hover{
     color: var(--hightlight-color);
     background-color: var(--primary-color);
+  }
+
+  .user-create-notify{
+    font-weight: 600;
   }
 
   /* small desktop*/

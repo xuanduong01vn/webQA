@@ -7,48 +7,25 @@ import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../AuthContext';
 
-function AccountMarked(){
-  document.title='My marked';
-  const [markedPosts, setMarkedPosts] = useState(null);
-  const [posts, setPosts] = useState(null);
+function AccountNotify(){
+  document.title='My post';
+  const [notifies, setNotifies] = useState(null);
   const [accs, setAccs] = useState(null);
-  const userToken = useContext(AuthContext);
+
+  const authToken = useContext(AuthContext);
 
   useEffect(()=>{
-    const getMarkedPost= async(req,res)=>{
+    const getNotify= async(req,res)=>{
       try {
-        const response = await axios.get(`http://localhost:9999/marked/?idAccount=${userToken.idCurrentUser}`)
+        const response = await axios.get(`http://localhost:9999/notify/?idAccount=${authToken.idCurrentUser}`)
         return response.data;
       } catch (err) {
         console.log(err.message);
       }
     }
-    getMarkedPost()
+    getNotify()
     .then(data=>{
-      if(data.length==0){
-        setMarkedPosts([]);
-      }
-      else{
-        setMarkedPosts(data[0].markedList);
-      }
-    })
-    .catch(err=>{
-      console.log(err.message);
-    })
-  },[]);
-
-  useEffect(()=>{
-    const getPost= async(req,res)=>{
-      try {
-        const response = await axios.get(`http://localhost:9999/posts`)
-        return response.data;
-      } catch (err) {
-        console.log(err.message);
-      }
-    }
-    getPost()
-    .then(data=>{
-      setPosts(data);
+      setNotifies(data);
     })
     .catch(err=>{
       console.log(err.message);
@@ -73,29 +50,14 @@ function AccountMarked(){
     })
   },[]);
 
-  const postsUserMarked = markedPosts?.slice().reverse().map(m=>
-    {
-      const post = posts?.find(p=>p._id==m.idPost);
-      if(post){
-        return {
-          _id: post._id,
-          title: post.title,
-          idAuthor: post.idAuthor,
-          isDeletedPost: post.isDeleted,
-          markedAt: m.markedAt
-        }
-      }
-    }
-  )
-
   return (
     <Wrapper>
       <Header/>
       <div className='account-container'>
         <div className='account-layout'>
-          <AssetsLayout itemActive={'Đã lưu'}/>
-          {postsUserMarked && accs &&(
-            <AssetsPost posts={postsUserMarked} title={'Đã lưu'} authors={accs}/>
+          <AssetsLayout itemActive={'Thông báo'}/>
+          {notifies && (
+            <AssetsPost posts={notifies} title={'Thông báo'} authors={accs}/>
           )}
         </div>
       </div>
@@ -104,7 +66,7 @@ function AccountMarked(){
   )
 }
 
-export default AccountMarked;
+export default AccountNotify;
 
 const Wrapper = styled.div`
 

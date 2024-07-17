@@ -3,6 +3,7 @@ import React, {useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { format, longFormatters } from 'date-fns';
 import { vi } from 'date-fns/locale';
+import { useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faComment 
@@ -15,6 +16,7 @@ import { AuthContext } from '../../AuthContext.js';
 function PostComment(props){
   const commentPoint =3;
   const {post}= props;
+  const location = useLocation();
   const authToken = useContext(AuthContext);
   const [inputComment, setInputComment] = useState('');
   const [amountCmt, setAmountCmt] = useState(post?.amountComment);
@@ -31,6 +33,7 @@ function PostComment(props){
     isDeleted: false,
   });
 
+  console.log(location);
   //lấy danh sách comment của bài viết
   useEffect(()=>{
     const getComments = async(req,res)=>{
@@ -108,6 +111,24 @@ function PostComment(props){
       .catch(err=>{
         console.log(err.message);
       })
+
+      //tao thong bao moi
+      if(post?.idAuthor!=authToken?.idCurrentUser){
+        axios.post(`http://localhost:9999/notify`,{
+          idAccount: post?.idAuthor,
+          contentNotify: `${authToken?.userLogin?.username} đã bình luận bài viết của bạn`,
+          notifyAt: new Date(),
+          linkNotify: `${location.pathname}`,
+          isSeen: false,
+        })
+        .then(res=>{
+          console.log(res.data);
+        })
+        .catch(err=>{
+          console.log(err.message);
+        })
+      }
+      
 
       //update số lượng comment của bài viết
       axios.put(`http://localhost:9999/posts/${post._id}`,

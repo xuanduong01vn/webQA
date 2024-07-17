@@ -54,9 +54,9 @@ function AccountDeleted(){
       <Header/>
       <div className='account-container'>
         <div className='account-layout'>
-          <AssetsLayout itemActive={'Thùng rác'}/>
+          <AssetsLayout itemActive={'Đã xóa'}/>
           {posts && accs && (
-            <AssetsPost posts={posts} authors={accs}/>
+            <AssetsPost posts={posts} title={'Đã xóa'} authors={accs}/>
           )}
         </div>
       </div>

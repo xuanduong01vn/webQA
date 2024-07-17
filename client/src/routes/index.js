@@ -20,6 +20,7 @@ import UpdatePost from '../pages/UpdatePost/UpdatePost.js';
 import PageDashboardComment from '../pages/DashboardComment/DashboardComment.js';
 import PageDashboardPostDetail from '../pages/DashboardPost/DashboardPostDetail.js';
 import PageDashboardUserDetail from '../pages/DashboardUser/DashboardUserDetail.js';
+import AccountNotify from '../pages/Account/AccountNotify.js';
 
 
 const routes=[
@@ -46,7 +47,7 @@ const routes=[
   {path: '/dashboard/comments', component: PageDashboardComment},
   {path: '/dashboard/post/:id', component: PageDashboardPostDetail},
   {path: '/dashboard/user/:id', component: PageDashboardUserDetail},
-
+  {path: '/account/notify', component: AccountNotify},
 ]
 
 export { routes };

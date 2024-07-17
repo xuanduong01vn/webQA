@@ -57,7 +57,7 @@ function AccountPost(){
         <div className='account-layout'>
           <AssetsLayout itemActive={'Bài viết'}/>
           {posts && accs && (
-            <AssetsPost posts={posts} authors={accs}/>
+            <AssetsPost posts={posts} title={'Bài viết'} authors={accs}/>
           )}
         </div>
       </div>

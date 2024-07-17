@@ -44,7 +44,7 @@ function AccountPostItem(props){
         )
         :(
           <div className='question-item-cover'>
-            <Link to={`/post/${post._id}`} className='question-item-title'>
+            <Link to={`/post/${post?._id}`} className='question-item-title'>
               <h3>{post?.title}</h3> 
             </Link>
             <div className='question-item-user'>
@@ -53,7 +53,7 @@ function AccountPostItem(props){
                   {author?.username}
                 </Link>
               </div>
-              <span className='uestion-item-author-ask'>{formatTime(post.createAt || post.markedAt || post.likedAt)}</span>
+              <span className='uestion-item-author-ask'>{formatTime(post?.createAt || post?.markedAt || post?.likedAt)}</span>
             </div>
 
             <div className='question-item-interact'>

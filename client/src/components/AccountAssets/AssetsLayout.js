@@ -25,9 +25,10 @@ function AssetsLayout(props){
 
   const navbarItems=[
     {path:'/account/post', title: 'Bài viết'},
-    {path:'/account/deleted', title: 'Thùng rác'},
+    {path:'/account/deleted', title: 'Đã xóa'},
     {path:'/account/liked', title: 'Đã thích'},
     {path:'/account/marked', title: 'Đã lưu'},
+    {path:'/account/notify', title: 'Thông báo'},
   ]
 
   const [selectedItem, setSelectedItem]=useState(0);
@@ -147,7 +148,7 @@ const Wrapper = styled.div`
     box-shadow: 0 0 10px var(--shadow-color);
     /* top: -208px; */
     /* top: -20px; */
-    top: -238px;
+    top: -348px;
     padding: 0;
 
     .account-navbar{
@@ -161,7 +162,7 @@ const Wrapper = styled.div`
       position: absolute;
       width: 100%;
       box-sizing: border-box;
-      top: 202px;
+      top: 312px;
       background-color: white; 
       box-shadow: 0 0 10px var(--shadow-color);
 
