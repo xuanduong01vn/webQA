@@ -33,7 +33,6 @@ function PostComment(props){
     isDeleted: false,
   });
 
-  console.log(location);
   //lấy danh sách comment của bài viết
   useEffect(()=>{
     const getComments = async(req,res)=>{
@@ -116,10 +115,20 @@ function PostComment(props){
       if(post?.idAuthor!=authToken?.idCurrentUser){
         axios.post(`http://localhost:9999/notify`,{
           idAccount: post?.idAuthor,
-          contentNotify: `${authToken?.userLogin?.username} đã bình luận bài viết của bạn`,
+          contentNotify: `<span class='user-create-notify'>${authToken?.userLogin?.username}</span> đã bình luận bài viết của bạn`,
           notifyAt: new Date(),
           linkNotify: `${location.pathname}`,
           isSeen: false,
+        })
+        .then(res=>{
+          console.log(res.data);
+        })
+        .catch(err=>{
+          console.log(err.message);
+        })
+
+        axios.put(`http://localhost:9999/accounts/${post?.idAuthor}`,{
+          newNotify: authToken?.userLogin?.newNotify+1,
         })
         .then(res=>{
           console.log(res.data);

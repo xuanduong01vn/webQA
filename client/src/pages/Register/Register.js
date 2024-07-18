@@ -75,6 +75,7 @@ function Register(){
     avatar: 'http://localhost:9999/file/avatar/avatar-default.jpg',
     listLiked: [],
     listMarked: [],
+    newNotify: 0,
     isDeleted: false
   };
 

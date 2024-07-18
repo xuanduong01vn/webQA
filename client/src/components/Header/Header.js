@@ -26,10 +26,13 @@ function Header(){
   const [searchText, setSearchText] = useState(isSearch || '');
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const currentToken = useContext(AuthContext);
+  const [amountNotify, setAmountNotify] = useState(null);
 
   const inputRef = useRef(null);
   const popupRefs = useRef({});
   const btnRefs = useRef({});
+
+  const [amountSeen, setAmountSeen] = useState(userNotify?.filter(n=>n.isSeen==true));
 
   useEffect(()=>{
     const getNotify = async(req,res)=>{
@@ -47,6 +50,10 @@ function Header(){
     .catch(err=>{
       console.log(err.message);
     })
+  },[amountSeen]);
+
+  useEffect(()=>{
+    setAmountNotify(currentToken?.userLogin?.newNotify);
   },[]);
 
   function handleSearchKey(){
@@ -98,10 +105,27 @@ function Header(){
     setSearchText('');
   }
 
+  function openNotifyBox(){
+    if(amountNotify>0){
+      setAmountNotify(0);
+    axios.put(`http://localhost:9999/accounts/${currentToken?.idCurrentUser}`,{
+      newNotify: 0,
+    })
+    .then(res=>{
+      console.log(res.data);
+    })
+    .catch(err=>{
+      console.log(err.message);
+    })
+    }
+    
+  }
+
   useEffect(() => {
     function handleClickOutside(e) {
       var looped=0;
       Object.keys(btnRefs.current).forEach(btn => {
+        
         if(btnRefs.current[btn].contains(e.target)){
           ++looped;
           if(!namePopup){
@@ -135,6 +159,19 @@ function Header(){
   function handleLogOut(){
     Cookies.remove('iduser')
     Cookies.remove('token')
+  }
+
+  function seeNotify(e){
+    setAmountSeen(amountSeen-1);
+    axios.put(`http://localhost:9999/notify/${e?.getAttribute('id')}`,{
+      isSeen: true,
+    })
+    .then(res=>{
+      console.log(res.data);
+    })
+    .catch(err=>{
+      console.log(err.message);
+    })
   }
 
     return (    
@@ -188,11 +225,11 @@ function Header(){
                   </button>
                 </div>
                 <div className='user-container-item'>
-                  <button className='notify-btn user-btn' ref={el => (btnRefs.current['notify'] = el)}>
+                  <button className='notify-btn user-btn' onClick={openNotifyBox} ref={el => (btnRefs.current['notify'] = el)}>
                     <FontAwesomeIcon icon={faBell} className='notify-icon user-container-icon'/>
-                    {(userNotify && userNotify?.filter(n=>n?.isSeen==false)?.length>0) &&
+                    {amountNotify>0 &&
                     <div className='notify-alert'>
-                        <span className='notify-alert-amount'>{userNotify?.filter(n=>n?.isSeen==false).length}</span>
+                        <span className='notify-alert-amount'>{amountNotify<10?amountNotify:`9+`}</span>
                     </div>
                     }
                     <div ref={el => (popupRefs.current['notify'] = el)} className={namePopup=='notify'?'header-pop-up-open':'header-pop-up'}>
@@ -202,10 +239,10 @@ function Header(){
                         :(
                           <ul className='header-pop-up-list'>
                             {userNotify?.map(n=>(
-                              <li key={n?._id} className='header-pop-up-item'>
+                              <li key={n?._id} id={n?._id} onClick={e=>seeNotify(e.currentTarget)} className='header-pop-up-item'>
                                 <Link to={n?.linkNotify} className='header-pop-up-link header-notify-item'>
                                   <span className='header-notify-item-content'>
-                                    <div>{n?.contentNotify}</div>
+                                    <div dangerouslySetInnerHTML={{ __html: n?.contentNotify}}></div>
                                     <div>{n?.notifyAt}</div>
                                   </span>
                                   <span className={n?.isSeen?'header-notify-item-state seen':'header-notify-item-state'}></span>
@@ -634,7 +671,7 @@ const Wrapper = styled.div`
   }
 
   .header-notify-alert{
-    width: 200px;
+    width: 300px;
     height: 160px;
     display: flex;
     justify-content: center;
@@ -644,9 +681,11 @@ const Wrapper = styled.div`
 
   .header-pop-up-link.header-notify-item{
     padding: 12px;
-    width: 200px;
+    width: 300px;
+    min-width: 300px;
     display: flex;
     align-items: center;
+    box-sizing: border-box;
   }
 
   .header-notify-item-content{
