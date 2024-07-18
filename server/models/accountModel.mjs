@@ -35,6 +35,10 @@ const accountSchema = new mongoose.Schema({
   listMarked:{
     type: Array,
   },
+  newNotify:{
+    type: Number,
+    required: true,
+  },
   isDeleted:{
     type: Boolean,
   },

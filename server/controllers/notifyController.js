@@ -36,6 +36,19 @@ const notifyController ={
       res.status(500).json(err.message);
     }
   },
+  updateNotify: async (req, res) => {
+    try {
+      const notify = await notifyModel.findById(req.params.id);
+      await notify.updateOne({ $set: req.body });
+      const updatedNotify = await notifyModel.findById(req.params.id);
+      res.status(200).json({
+        message: 'Updated successfully!',
+        data: updatedNotify,
+      });
+    } catch (err) {
+      res.status(500).json(err.message);
+    }
+  },
   deleteNotify: async (req, res) => {
     try {
       const post = await notifyModel.findByIdAndDelete(req.params.id);
