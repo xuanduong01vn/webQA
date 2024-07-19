@@ -98,6 +98,8 @@ function PostComment(props){
         content: inputComment.trim(),
       })
 
+      let idNewCmt='';
+
       //post comment mới lên db
       axios.post(`http://localhost:9999/comments`,valueComment)
       .then(res=>{
@@ -106,12 +108,8 @@ function PostComment(props){
           ...valueComment,
           content: '',
         })
-      })
-      .catch(err=>{
-        console.log(err.message);
-      })
 
-      //tao thong bao moi
+        //tao thong bao moi
       if(post?.idAuthor!=authToken?.idCurrentUser){
         axios.post(`http://localhost:9999/notify`,{
           idAccount: post?.idAuthor,
@@ -119,6 +117,7 @@ function PostComment(props){
           notifyAt: new Date(),
           linkNotify: `${location.pathname}`,
           isSeen: false,
+          idLink: res.data._id,
         })
         .then(res=>{
           console.log(res.data);
@@ -132,11 +131,18 @@ function PostComment(props){
         })
         .then(res=>{
           console.log(res.data);
+          authToken.updateNotifyState(res.data.data.newNotify+1);
         })
         .catch(err=>{
           console.log(err.message);
         })
       }
+      })
+      .catch(err=>{
+        console.log(err.message);
+      })
+
+      
       
 
       //update số lượng comment của bài viết
@@ -249,7 +255,7 @@ function PostComment(props){
           (
             <ul className='post-comment-list'>
               {listComment.filter(cmt=>cmt.idParent=='').map(comment=>(
-                <li key={comment._id} className='post-comment-item'>
+                <li key={comment._id} id={comment._id} className='post-comment-item'>
                   <CommentItem post={amountCmt} comment={comment} 
                   author={getInfoUser(comment.idUser)}
                   openReply={handleOpenReply}
@@ -264,7 +270,7 @@ function PostComment(props){
                   <ul className='post-reply-list'>
                     {listComment.filter(cmt=>cmt.idParent!='' && cmt.idParent==comment._id).map(rep=>(
                       
-                      <li key={rep._id} className='post-reply-item'>
+                      <li key={rep._id} id={rep._id} className='post-reply-item'>
                         <CommentItem post={amountCmt} comment={rep} 
                         deleteComment={handleDeleteComment}
                         author={getInfoUser(rep.idUser)}

@@ -37,7 +37,7 @@ function Header(){
   useEffect(()=>{
     const getNotify = async(req,res)=>{
       try {
-        const response = await axios.get(`http://localhost:9999/notify?idAccount=${currentToken?.idCurrentUser}`);
+        const response = await axios.get(`http://localhost:9999/notify?idAccount=${currentToken?.idCurrentUser}&sort=notifyAt`);
         return response.data;
       } catch (err) {
         console.log(err.message);
@@ -107,9 +107,10 @@ function Header(){
 
   function openNotifyBox(){
     if(amountNotify>0){
+      currentToken.updateNotifyState(0);
       setAmountNotify(0);
-    axios.put(`http://localhost:9999/accounts/${currentToken?.idCurrentUser}`,{
-      newNotify: 0,
+      axios.put(`http://localhost:9999/accounts/${currentToken?.idCurrentUser}`,{
+        newNotify: 0,
     })
     .then(res=>{
       console.log(res.data);
@@ -163,15 +164,21 @@ function Header(){
 
   function seeNotify(e){
     setAmountSeen(amountSeen-1);
-    axios.put(`http://localhost:9999/notify/${e?.getAttribute('id')}`,{
-      isSeen: true,
-    })
-    .then(res=>{
-      console.log(res.data);
-    })
-    .catch(err=>{
-      console.log(err.message);
-    })
+    
+    // console.log(e);
+    // e.scrollIntoView({ behavior: 'smooth' });
+    if(userNotify?.find(n=>n._id==e?.getAttribute('name'))?.isSeen==false){
+      axios.put(`http://localhost:9999/notify/${e?.getAttribute('name')}`,{
+        isSeen: true,
+      })
+      .then(res=>{
+        console.log(res.data);
+      })
+      .catch(err=>{
+        console.log(err.message);
+      })
+    }
+    setNamePopup(null);
   }
 
     return (    
@@ -239,7 +246,7 @@ function Header(){
                         :(
                           <ul className='header-pop-up-list'>
                             {userNotify?.map(n=>(
-                              <li key={n?._id} id={n?._id} onClick={e=>seeNotify(e.currentTarget)} className='header-pop-up-item'>
+                              <li key={n?._id} name={n?._id} onClick={e=>seeNotify(e.currentTarget)} className='header-pop-up-item'>
                                 <Link to={n?.linkNotify} className='header-pop-up-link header-notify-item'>
                                   <span className='header-notify-item-content'>
                                     <div dangerouslySetInnerHTML={{ __html: n?.contentNotify}}></div>
@@ -648,6 +655,8 @@ const Wrapper = styled.div`
     padding: 0;
     margin: 0;
     width: max-content;
+    max-height: 400px;
+    overflow-y: scroll;
   }
 
   .header-pop-up-item{
@@ -686,6 +695,7 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     box-sizing: border-box;
+    font-size: 14px;
   }
 
   .header-notify-item-content{

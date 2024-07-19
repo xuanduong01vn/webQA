@@ -41,11 +41,19 @@ function AuthProvider({children}){
       avatar: data,
     })
   }
+
+  const updateNotifyState=(data)=>{
+    setUserLogin({
+      ...userLogin,
+      newNotify: data,
+    })
+  }
   
   const auth = {
     idCurrentUser,
     loginSuccess,
     updateUser,
+    updateNotifyState,
     userLogin,
   }
 
