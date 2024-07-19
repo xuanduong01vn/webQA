@@ -21,6 +21,10 @@ const notifySchema = new mongoose.Schema({
   isSeen:{
     type: Boolean,
     required: true,
+  },
+  idLink:{
+    type: String, 
+    required: true,
   }
 },
 {
