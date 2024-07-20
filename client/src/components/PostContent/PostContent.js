@@ -239,7 +239,7 @@ function PostContent(props){
   var timeCreated;
   const now = new Date();
 
-  if(postData.createAt?.length>0){
+  if(postData?.createAt?.length>0){
     if(now.getFullYear()== new Date(postData.createAt).getFullYear()){
       timeCreated= format(new Date(postData.createAt), 'HH:mm, EEEE, dd MMM', { locale: vi });
     }
@@ -274,13 +274,13 @@ function PostContent(props){
   
   return(
     <Wrapper>
-      {(postData.isDeleted === true)
+      {(postData?.isDeleted === true)
           ?(
             <div className='post-content-not-found'>
               <h1 className='alert-not-found'>Bài viết không còn tồn tại!</h1>
             </div>
           )
-        :(postData.isDeleted === false)
+        :(postData?.isDeleted === false)
           ?(
             <div className='post-content-all'>
               <div className='post-content-container'>

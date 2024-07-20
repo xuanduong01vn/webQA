@@ -6,7 +6,7 @@ import ReactPaginate from 'react-paginate';
 import AssetsItem from './AssetItem';
 import { AuthContext } from '../../AuthContext';
 
-const itemsPerPage = 6;
+const itemsPerPage=10;
 
 function AssetsPost(props){
   const { posts, title, authors} = props;
@@ -78,14 +78,14 @@ function AssetsPost(props){
 
       {!noQuestion &&
         <ul className='post-list-box'>
-          {currentItems.map(p=>(
+          {posts.map(p=>(
             <li key={p?._id} className='post-item'>
             <AssetsItem author={authors?.find(acc=>acc?._id==p?.idAuthor)} post={p}/>
           </li>
           ))} 
         </ul>
       }
-      {currentPosts.length>itemsPerPage &&
+      {false &&
         <ReactPaginate
           nextLabel='>'
           onPageChange={handlePageClick}
@@ -118,6 +118,7 @@ export default AssetsPost;
 const Wrapper = styled.div`
   width: 100%;
   box-sizing: border-box;
+  margin-left: 220px;
 
   .post-list-alert{
     width: 100%;

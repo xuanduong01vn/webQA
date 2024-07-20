@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import React, {useEffect, useState} from 'react';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
@@ -26,6 +27,23 @@ function AccountPostItem(props){
       }
     }
   }
+  function seeNotify(e){
+    // console.log(e);
+    // e.scrollIntoView({ behavior: 'smooth' });
+    if(post?.isSeen==false){
+      axios.put(`http://localhost:9999/notify/${post?._id}`,{
+        isSeen: true,
+      })
+      .then(res=>{
+        console.log(res.data);
+      })
+      .catch(err=>{
+        console.log(err.message);
+      })
+
+      
+    }
+  }
 
   return(
     <Wrapper>
@@ -43,9 +61,18 @@ function AccountPostItem(props){
           </div>
         )
         :(
-          <div className='question-item-cover'>
-            <Link to={`/post/${post?._id}`} className='question-item-title'>
-              <h3>{post?.title}</h3> 
+          <div className='question-item-cover' onClick={e=>seeNotify(e.currentTarget)}>
+            <Link to={post?.linkNotify || `/post/${post?._id}`} className='question-item-title'>
+              <h3 dangerouslySetInnerHTML={{ __html: post?.title}}></h3> 
+              <div className='notify-item-detail'>
+                <span className='notify-item-content' dangerouslySetInnerHTML={{ __html: post?.contentNotify}}></span> 
+                {post?.isSeen==false &&
+                  <span className='notify-item-state'></span>
+                }
+                
+              </div>
+              
+              <p className='question-item-notify-at'>{formatTime(post?.notifyAt)}</p>
             </Link>
             <div className='question-item-user'>
               <div className='question-item-author'>
@@ -53,7 +80,7 @@ function AccountPostItem(props){
                   {author?.username}
                 </Link>
               </div>
-              <span className='uestion-item-author-ask'>{formatTime(post?.createAt || post?.markedAt || post?.likedAt)}</span>
+              <span className='question-item-author-ask'>{formatTime(post?.createAt || post?.markedAt || post?.likedAt)}</span>
             </div>
 
             <div className='question-item-interact'>
@@ -86,12 +113,17 @@ const Wrapper = styled.div`
   .question-item-title{
     margin: 0;
     transition: var(--transition-time);
+    width: 100%;
 
     & h3{
       margin: 0;
     }
 
     &:hover h3{
+      color: var(--hightlight-color);
+    }
+
+    &:hover .notify-item-detail{
       color: var(--hightlight-color);
     }
   }
@@ -141,6 +173,33 @@ const Wrapper = styled.div`
     & svg{
       margin-right: 4px;
     }
+  }
+
+  .question-item-notify-at{
+    margin: 0;
+  }
+
+  .user-create-notify{
+    font-weight: 700;
+  }
+
+  .notify-item-detail{
+    width: 100%;
+    display: flex;
+  }
+
+  .notify-item-content{
+    width: 100%;
+  }
+
+  .notify-item-state{
+    min-width: 8px;
+    height: 8px;
+    background-color: var(--hightlight-color);
+    box-sizing: border-box;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 12px;
   }
   /* small desktop*/
   @media (max-width: 1279px) and (min-width: 769px) {

@@ -64,6 +64,7 @@ const Wrapper = styled.div`
   min-width: 220px;
   padding: 0 20px 24px 0;
   box-sizing: border-box;
+  position: fixed;
 
   .account-navbar{
     width: 100%;

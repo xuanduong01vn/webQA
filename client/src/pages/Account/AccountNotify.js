@@ -8,7 +8,7 @@ import axios from 'axios';
 import { AuthContext } from '../../AuthContext';
 
 function AccountNotify(){
-  document.title='My post';
+  document.title='My notifications';
   const [notifies, setNotifies] = useState(null);
   const [accs, setAccs] = useState(null);
 
@@ -17,7 +17,7 @@ function AccountNotify(){
   useEffect(()=>{
     const getNotify= async(req,res)=>{
       try {
-        const response = await axios.get(`http://localhost:9999/notify/?idAccount=${authToken.idCurrentUser}`)
+        const response = await axios.get(`http://localhost:9999/notify/?idAccount=${authToken.idCurrentUser}&sort=notifyAt`)
         return response.data;
       } catch (err) {
         console.log(err.message);
