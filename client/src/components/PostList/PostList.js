@@ -34,7 +34,7 @@ function PostList(props){
   useEffect(()=>{
     const getDataPost = async () => {
       try {
-        const response = await axios.get(`http://localhost:9999/posts/?isDeleted=false`);
+        const response = await axios.get(`http://localhost:9999/posts/?isDeleted=false&sort=createAt`);
         return await response.data;
       } catch (err) {
         console.log('Error fetching posts:', err.message);

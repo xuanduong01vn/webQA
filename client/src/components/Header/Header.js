@@ -32,17 +32,19 @@ function Header(){
   const popupRefs = useRef({});
   const btnRefs = useRef({});
 
-  const [amountSeen, setAmountSeen] = useState(userNotify?.filter(n=>n.isSeen==true));
+  const [amountSeen, setAmountSeen] = useState(null);
 
   useEffect(()=>{
-    const getNotify = async(req,res)=>{
-      try {
-        const response = await axios.get(`http://localhost:9999/notify?idAccount=${currentToken?.idCurrentUser}&sort=notifyAt`);
-        return response.data;
-      } catch (err) {
-        console.log(err.message);
+    if(currentToken?.idCurrentUser){
+      const getNotify = async(req,res)=>{
+        try {
+          const response = await axios.get(`http://localhost:9999/notify?idAccount=${currentToken?.idCurrentUser}&sort=notifyAt`);
+          return response.data;
+          
+        } catch (err) {
+          console.log(err.message);
+        }
       }
-    }
     getNotify()
     .then(data=>{
       setUserNotify(data);
@@ -50,7 +52,29 @@ function Header(){
     .catch(err=>{
       console.log(err.message);
     })
+    }
   },[amountSeen]);
+
+  useEffect(()=>{
+    if(currentToken?.idCurrentUser){
+      const getNotify = async(req,res)=>{
+        try {
+          const response = await axios.get(`http://localhost:9999/notify?idAccount=${currentToken?.idCurrentUser}&isSeen=true`);
+          return response.data;
+          
+        } catch (err) {
+          console.log(err.message);
+        }
+      }
+    getNotify()
+    .then(data=>{
+      setAmountSeen(data);
+    })
+    .catch(err=>{
+      console.log(err.message);
+    })
+    }
+  },[]);
 
   useEffect(()=>{
     setAmountNotify(currentToken?.userLogin?.newNotify);
@@ -119,7 +143,6 @@ function Header(){
       console.log(err.message);
     })
     }
-    
   }
 
   useEffect(() => {
@@ -163,20 +186,22 @@ function Header(){
   }
 
   function seeNotify(e){
-    setAmountSeen(amountSeen-1);
-    
     // console.log(e);
     // e.scrollIntoView({ behavior: 'smooth' });
+    console.log(userNotify?.find(n=>n._id==e?.getAttribute('name'))?.isSeen);
     if(userNotify?.find(n=>n._id==e?.getAttribute('name'))?.isSeen==false){
       axios.put(`http://localhost:9999/notify/${e?.getAttribute('name')}`,{
         isSeen: true,
       })
       .then(res=>{
         console.log(res.data);
+        setAmountSeen(amountSeen+1);
       })
       .catch(err=>{
         console.log(err.message);
       })
+
+      
     }
     setNamePopup(null);
   }
@@ -244,7 +269,7 @@ function Header(){
                         ?(
                           <span className='header-notify-alert'>Chưa có thông báo nào</span>)
                         :(
-                          <ul className='header-pop-up-list'>
+                          <ul className='header-pop-up-list notify-list'>
                             {userNotify?.map(n=>(
                               <li key={n?._id} name={n?._id} onClick={e=>seeNotify(e.currentTarget)} className='header-pop-up-item'>
                                 <Link to={n?.linkNotify} className='header-pop-up-link header-notify-item'>
@@ -646,17 +671,25 @@ const Wrapper = styled.div`
     right: 9px;       
   }
 
-  .header-pop-up-list{
-    list-style: none;
-  }
-
   .header-pop-up-list{ 
     list-style: none;
     padding: 0;
     margin: 0;
     width: max-content;
-    max-height: 400px;
+  }
+
+  .header-pop-up-list.notify-list{
+    max-height: 380px;
     overflow-y: scroll;
+    scrollbar-color: transparent;
+
+    &::-webkit-scrollbar-thumb {
+      background: transparent; 
+    }
+
+    & li:not(:last-child){
+      border-bottom: 1px solid var(--primary-color);
+    }
   }
 
   .header-pop-up-item{

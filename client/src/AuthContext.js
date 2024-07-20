@@ -9,6 +9,13 @@ function AuthProvider({children}){
   const [idCurrentUser, setIdCurrentUser]= useState(id || '');
   const [userLogin, setUserLogin] = useState({});
 
+  const updateNotifyState=(data)=>{
+    setUserLogin({
+      ...userLogin,
+      newNotify: data,
+    })
+  }
+
   useEffect(()=>{
     if(id){
       const getUser = async () => {
@@ -39,13 +46,6 @@ function AuthProvider({children}){
     setUserLogin({
       ...userLogin,
       avatar: data,
-    })
-  }
-
-  const updateNotifyState=(data)=>{
-    setUserLogin({
-      ...userLogin,
-      newNotify: data,
     })
   }
   

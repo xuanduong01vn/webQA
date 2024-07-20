@@ -125,25 +125,29 @@ function PostComment(props){
         .catch(err=>{
           console.log(err.message);
         })
-
-        axios.put(`http://localhost:9999/accounts/${post?.idAuthor}`,{
-          newNotify: authToken?.userLogin?.newNotify+1,
-        })
-        .then(res=>{
-          console.log(res.data);
-          authToken.updateNotifyState(res.data.data.newNotify+1);
-        })
-        .catch(err=>{
-          console.log(err.message);
-        })
       }
       })
       .catch(err=>{
         console.log(err.message);
       })
 
-      
-      
+      axios.get(`http://localhost:9999/accounts/${post?.idAuthor}`)
+        .then(res=>{
+          console.log(res.data);
+          axios.put(`http://localhost:9999/accounts/${post?.idAuthor}`,{
+            newNotify: res.data.newNotify+1,
+          })
+          .then(res=>{
+            console.log(res.data);
+            authToken.updateNotifyState(res.data.data.newNotify+1);
+          })
+          .catch(err=>{
+            console.log(err.message);
+          })
+        })
+        .catch(err=>{
+          console.log(err.message);
+        })
 
       //update số lượng comment của bài viết
       axios.put(`http://localhost:9999/posts/${post._id}`,
