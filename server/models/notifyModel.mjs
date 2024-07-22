@@ -2,7 +2,11 @@ import mongoose from 'mongoose';
 import Account from './accountModel.mjs';
 
 const notifySchema = new mongoose.Schema({
-  idAccount:{
+  idAccountReceive:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: Account,
+  },
+  idAccountSend:{
     type: mongoose.Schema.Types.ObjectId,
     ref: Account,
   },
@@ -24,6 +28,9 @@ const notifySchema = new mongoose.Schema({
   },
   idLink:{
     type: String, 
+  },
+  typeNotify:{
+    type: String,
     required: true,
   }
 },
