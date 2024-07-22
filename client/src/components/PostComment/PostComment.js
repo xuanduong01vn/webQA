@@ -37,7 +37,7 @@ function PostComment(props){
   useEffect(()=>{
     const getComments = async(req,res)=>{
       try {
-        const response = await axios.get(`http://localhost:9999/comments?idPost=${post._id}&sort=asc`);
+        const response = await axios.get(`http://localhost:9999/comments?idPost=${post._id}&isDeleted=false&sort=asc`);
         return response.data;
       } catch (err) {
         console.log(err.message);
@@ -110,22 +110,24 @@ function PostComment(props){
         })
 
         //tao thong bao moi
-      if(post?.idAuthor!=authToken?.idCurrentUser){
-        axios.post(`http://localhost:9999/notify`,{
-          idAccount: post?.idAuthor,
-          contentNotify: `<span class='user-create-notify'>${authToken?.userLogin?.username}</span> đã bình luận bài viết của bạn`,
-          notifyAt: new Date(),
-          linkNotify: `${location.pathname}`,
-          isSeen: false,
-          idLink: res.data._id,
-        })
-        .then(res=>{
-          console.log(res.data);
-        })
-        .catch(err=>{
-          console.log(err.message);
-        })
-      }
+        if(post?.idAuthor!=authToken?.idCurrentUser){
+          axios.post(`http://localhost:9999/notify`,{
+            idAccountReceive: post?.idAuthor,
+            idAccountSend: authToken?.idCurrentUser,
+            contentNotify: `<span class='user-create-notify'>${authToken?.userLogin?.username}</span> đã bình luận bài viết của bạn`,
+            notifyAt: new Date(),
+            linkNotify: `${location.pathname}`,
+            isSeen: false,
+            idLink: res.data._id,
+            typeNotify: 'comment',
+          })
+          .then(res=>{
+            console.log(res.data);
+          })
+          .catch(err=>{
+            console.log(err.message);
+          })
+        }
       })
       .catch(err=>{
         console.log(err.message);
@@ -139,7 +141,7 @@ function PostComment(props){
           })
           .then(res=>{
             console.log(res.data);
-            authToken.updateNotifyState(res.data.data.newNotify+1);
+            // authToken.updateNotifyState(res.data.data.newNotify+1);
           })
           .catch(err=>{
             console.log(err.message);
@@ -171,10 +173,48 @@ function PostComment(props){
       axios.post(`http://localhost:9999/comments`,inputReply)
       .then(res=>{
         console.log(res.data);
+        //tao thong bao moi
+        if(post?.idAuthor!=authToken?.idCurrentUser){
+          axios.post(`http://localhost:9999/notify`,{
+            idAccountReceive: post?.idAuthor,
+            idAccountSend: authToken?.idCurrentUser,
+            contentNotify: `<span class='user-create-notify'>${authToken?.userLogin?.username}</span> đã bình luận bài viết của bạn`,
+            notifyAt: new Date(),
+            linkNotify: `${location.pathname}`,
+            isSeen: false,
+            idLink: res.data._id,
+            typeNotify: 'comment',
+          })
+          .then(res=>{
+            console.log(res.data);
+          })
+          .catch(err=>{
+            console.log(err.message);
+          })
+        }
       })
       .catch(err=>{
         console.log(err.message);
       })
+
+
+      axios.get(`http://localhost:9999/accounts/${post?.idAuthor}`)
+        .then(res=>{
+          console.log(res.data);
+          axios.put(`http://localhost:9999/accounts/${post?.idAuthor}`,{
+            newNotify: res.data.newNotify+1,
+          })
+          .then(res=>{
+            console.log(res.data);
+            // authToken.updateNotifyState(res.data.data.newNotify+1);
+          })
+          .catch(err=>{
+            console.log(err.message);
+          })
+        })
+        .catch(err=>{
+          console.log(err.message);
+        })
 
       //update số lượng comment chủa bài viết
       axios.put(`http://localhost:9999/posts/${post._id}`,
@@ -202,6 +242,43 @@ function PostComment(props){
     .catch(err=>{
       console.log(err.message);
     })
+
+    if(post?.idAuthor!=authToken?.idCurrentUser){
+      axios.get(`http://localhost:9999/notify/?typeNotify=comment&idLink=${idCmt}`)
+      .then(res=>{
+        axios.delete(`http://localhost:9999/notify/${res.data[0]._id}`)
+        .then(res=>{
+          console.log(res.data);
+        })
+        .catch(err=>{
+          console.log(err.message);
+        })
+      })
+      .catch(err=>{
+        console.log(err.message);
+      })
+
+      axios.get(`http://localhost:9999/accounts/${post?.idAuthor}`)
+      .then(res=>{
+        console.log(res.data);
+        if(res.data.newNotify>0){
+          axios.put(`http://localhost:9999/accounts/${post?.idAuthor}`,{
+          newNotify: res.data.newNotify-1,
+          })
+          .then(res=>{
+              console.log(res.data);
+              // userToken.updateNotifyState(res.data.data.newNotify+1);
+          })
+          .catch(err=>{
+              console.log(err.message);
+          })
+        }
+        
+      })
+      .catch(err=>{
+        console.log(err.message);
+      })
+    }
 
     //update số lượng comment của bài viết
     axios.put(`http://localhost:9999/posts/${post._id}`,

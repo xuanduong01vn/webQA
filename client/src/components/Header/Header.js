@@ -3,6 +3,8 @@ import React, { useEffect, useState, useRef, useContext } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom'; 
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { format, longFormatters } from 'date-fns';
+import { vi } from 'date-fns/locale';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass,
           faPen,
@@ -38,7 +40,7 @@ function Header(){
     if(currentToken?.idCurrentUser){
       const getNotify = async(req,res)=>{
         try {
-          const response = await axios.get(`http://localhost:9999/notify?idAccount=${currentToken?.idCurrentUser}&sort=notifyAt`);
+          const response = await axios.get(`http://localhost:9999/notify?idAccountReceive=${currentToken?.idCurrentUser}&sort=notifyAt`);
           return response.data;
           
         } catch (err) {
@@ -59,7 +61,7 @@ function Header(){
     if(currentToken?.idCurrentUser){
       const getNotify = async(req,res)=>{
         try {
-          const response = await axios.get(`http://localhost:9999/notify?idAccount=${currentToken?.idCurrentUser}&isSeen=true`);
+          const response = await axios.get(`http://localhost:9999/notify?idAccountReceive=${currentToken?.idCurrentUser}&isSeen=true`);
           return response.data;
           
         } catch (err) {
@@ -206,6 +208,18 @@ function Header(){
     setNamePopup(null);
   }
 
+  const now = new Date();
+  function formatTime(time){  
+    if(time?.length>0){
+      if(now.getFullYear()== new Date(time).getFullYear()){
+        return format(new Date(time), 'HH:mm, dd MMM', { locale: vi });
+      }
+      else{
+        return format(new Date(time), 'HH:mm, dd MMM yyyy', { locale: vi });
+      }
+    }
+  }
+
     return (    
         <Wrapper>
           <div className='header-container'>
@@ -265,9 +279,9 @@ function Header(){
                     </div>
                     }
                     <div ref={el => (popupRefs.current['notify'] = el)} className={namePopup=='notify'?'header-pop-up-open':'header-pop-up'}>
-                        {userNotify?.length==0 
+                        {userNotify?.length==0 || !userNotify
                         ?(
-                          <span className='header-notify-alert'>Chưa có thông báo nào</span>)
+                          <span className='header-notify-alert'>Không có thông báo nào</span>)
                         :(
                           <ul className='header-pop-up-list notify-list'>
                             {userNotify?.map(n=>(
@@ -275,7 +289,7 @@ function Header(){
                                 <Link to={n?.linkNotify} className='header-pop-up-link header-notify-item'>
                                   <span className='header-notify-item-content'>
                                     <div dangerouslySetInnerHTML={{ __html: n?.contentNotify}}></div>
-                                    <div>{n?.notifyAt}</div>
+                                    <div>{formatTime(n?.notifyAt)}</div>
                                   </span>
                                   <span className={n?.isSeen?'header-notify-item-state seen':'header-notify-item-state'}></span>
                                 </Link>
@@ -285,8 +299,7 @@ function Header(){
                           </ul>
                           )
                         }
-                        <Link to='/account/notify' className='header-pop-up-link see-all-notify'>
-                          Xem tất cả thông báo
+                        <Link to={!userNotify?`/login`:`/account/notify`} onClick={()=>{setNamePopup(null);}} className='header-pop-up-link see-all-notify'>{!userNotify?`Đăng nhập để xem thông báo`:`Xem tất cả thông báo`}
                         </Link>
                       </div>
                   </button>

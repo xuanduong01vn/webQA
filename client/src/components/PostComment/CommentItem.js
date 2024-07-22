@@ -105,7 +105,63 @@ function CommentItem(props){
 
   return(
     <Wrapper>
-      {isDeletedPost
+      <div key={comment._id} className='comment-item'>
+          <div className='comment-item-created'>
+            <div className='comment-item-user-avatar'>
+              <img src={author?.avatar} alt='' className='comment-item-user-image'/>
+            </div>
+            <div className='comment-item-user-created'>
+              <Link to={`/user/${comment.idUser}`} className='comment-item-username'>{author?.username}</Link>
+              <span className='comment-item-created-time'> bình luận lúc {formatTime(comment.createAt)}</span>
+            </div>
+          </div>
+          <div className='comment-item-content'>
+            {classInput==comment._id 
+            ?(<textarea autoFocus 
+              ref={textareaRef}
+              className='comment-content-box'
+              value={inputComment}
+              onChange={e=>onChangeValue(e)}
+              />)
+            :(<p>{comment.content}</p>)
+            }
+            
+          </div>
+          {classInput != comment._id
+            ?(<div className='comment-item-action'>
+                <button className='comment-item-btn active'
+                onClick={openReplyBox}>
+                  Trả lời
+                </button>
+                {comment.idUser == authToken.idCurrentUser &&
+                  <button onClick={()=>{onEditComment(comment._id)}} className='comment-item-btn'>
+                    Sửa
+                  </button>
+                }
+                {comment.idUser == authToken.idCurrentUser && 
+                  <button 
+                    onClick={()=>{
+                      deleteComment(comment._id);
+                      setIsDeletedPost(true);
+                    }} 
+                    className='comment-item-btn'>
+                      Xóa
+                  </button>
+                }
+              </div>)
+            :(<div className='comment-item-action'>
+                <button className='comment-item-btn'
+                onClick={()=>setClassInput(null)}>
+                  Hủy
+                </button>
+                <button onClick={()=>{handleEditComment(comment._id)}} className={inputComment.trim().length>0?'comment-item-btn active':'comment-item-btn disable'}>
+                  Lưu
+                </button>
+              </div>
+            )
+          }
+        </div>
+      {/* {isDeletedPost
       ?(<div key={comment._id} className='comment-item'>
         <div className='comment-item-created'>
           <div className='comment-item-user-avatar'>
@@ -178,7 +234,7 @@ function CommentItem(props){
           }
         </div>
       )  
-      }
+      } */}
         
     </Wrapper>
   )

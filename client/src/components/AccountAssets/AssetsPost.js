@@ -70,7 +70,7 @@ function AssetsPost(props){
     <Wrapper>
       <div className='post-list-container'>
       <h2 className='post-container-title'>{`${title} (${posts?.length})`}</h2>
-      {noQuestion&&
+      {noQuestion &&
         <div className='post-list-alert'>
           <span>Chưa có bài viết nào</span>
         </div>
@@ -206,27 +206,29 @@ const Wrapper = styled.div`
   /* tablet large phone*/
   @media (max-width: 768px) and (min-width: 481px) {
     padding: 0 20px 0 0;
+    margin-left: 160px;
 
     .post-list-container{
       margin-top: 20px;
     }
 
-    .post-container-title{
+    /* .post-container-title{
       display: none;
-    }
+    } */
   }
 
   /* small phone */
   @media (max-width: 480px) {
     padding: 0 20px;
+    margin-left: 0;
 
     .post-list-container{
       margin-top: 20px;
     }
 
-    .post-container-title{
+    /* .post-container-title{
       display: none;
-    }
+    } */
   }
 
 `

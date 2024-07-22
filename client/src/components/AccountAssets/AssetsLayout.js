@@ -136,8 +136,7 @@ const Wrapper = styled.div`
 
   /* tablet large phone*/
   @media (max-width: 768px) and (min-width: 481px) {
-    width: 160px;
-
+    min-width: 160px;
 
   }
 

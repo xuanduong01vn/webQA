@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import React, {useState, useEffect, useContext, useRef } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -24,6 +24,7 @@ function PostContent(props){
   let { id } = useParams();
   const likePoint=1;
   const markPoint=2;
+  const location = useLocation();
   const {onDataReceived, onDeletePost, onIsDeleted} = props;
   const [postData, setPostData] = useState({});
   const [author, setAuthor] = useState({});
@@ -208,14 +209,52 @@ function PostContent(props){
         setLikedPosts(res.data.data);
       })
     }
-    setAmountLiked(amountLiked+1);
-      axios.put(`http://localhost:9999/posts/${id}`,{
-        amountLiked: amountLiked+1,
-        engageRate: engageRate+likePoint,
+    //tao thong bao moi
+    if(postData?.idAuthor!=userToken?.idCurrentUser){
+      axios.post(`http://localhost:9999/notify`,{
+        idAccountReceive: postData?.idAuthor,
+        idAccountSend: userToken?.idCurrentUser,
+        contentNotify: `<span class='user-create-notify'>${userToken?.userLogin?.username}</span> đã thích bài viết của bạn`,
+        notifyAt: new Date(),
+        linkNotify: `${location.pathname}`,
+        isSeen: false,
+        idLink: '',
+        typeNotify: 'like'
       })
       .then(res=>{
         console.log(res.data);
       })
+      .catch(err=>{
+        console.log(err.message);
+      })
+    }
+
+    axios.get(`http://localhost:9999/accounts/${postData?.idAuthor}`)
+    .then(res=>{
+      console.log(res.data);
+      axios.put(`http://localhost:9999/accounts/${postData?.idAuthor}`,{
+        newNotify: res.data.newNotify+1,
+      })
+      .then(res=>{
+        console.log(res.data);
+        // userToken.updateNotifyState(res.data.data.newNotify+1);
+      })
+      .catch(err=>{
+        console.log(err.message);
+      })
+    })
+    .catch(err=>{
+      console.log(err.message);
+    })
+
+    setAmountLiked(amountLiked+1);
+    axios.put(`http://localhost:9999/posts/${id}`,{
+      amountLiked: amountLiked+1,
+      engageRate: engageRate+likePoint,
+    })
+    .then(res=>{
+      console.log(res.data);
+    })
   }
 
   function unlikePost(){
@@ -226,7 +265,45 @@ function PostContent(props){
       console.log(res.data);
       setLikedPosts(res.data.data);
     })
-  setAmountLiked(amountLiked-1);
+
+    //xoa thong bao
+    if(postData?.idAuthor!=userToken?.idCurrentUser){
+      axios.get(`http://localhost:9999/notify/?typeNotify=like&idAccountReceive=${postData?.idAuthor}&idAccountSend=${userToken?.idCurrentUser}`)
+      .then(res=>{
+        axios.delete(`http://localhost:9999/notify/${res.data[0]._id}`)
+        .then(res=>{
+          console.log(res.data);
+        })
+        .catch(err=>{
+          console.log(err.message);
+        })
+      })
+      .catch(err=>{
+        console.log(err.message);
+      })
+
+      axios.get(`http://localhost:9999/accounts/${postData?.idAuthor}`)
+      .then(res=>{
+        console.log(res.data);
+        if(res.data.newNotify>0){
+          axios.put(`http://localhost:9999/accounts/${postData?.idAuthor}`,{
+          newNotify: res.data.newNotify-1,
+          })
+          .then(res=>{
+              console.log(res.data);
+              // userToken.updateNotifyState(res.data.data.newNotify+1);
+          })
+          .catch(err=>{
+              console.log(err.message);
+          })
+        }
+        
+      })
+      .catch(err=>{
+        console.log(err.message);
+      })
+    }
+    setAmountLiked(amountLiked-1);
     axios.put(`http://localhost:9999/posts/${id}`,{
       amountLiked: amountLiked-1,
       engageRate: engageRate-likePoint,
@@ -234,7 +311,7 @@ function PostContent(props){
     .then(res=>{
       console.log(res);
     })
-}
+  }
 
   var timeCreated;
   const now = new Date();
@@ -369,8 +446,8 @@ function PostContent(props){
         :(<div className='post-content-not-found'></div>) 
       }
     </Wrapper>
-  )
-}
+    )
+  }
 
 export default PostContent;
 

@@ -17,7 +17,7 @@ function AccountNotify(){
   useEffect(()=>{
     const getNotify= async(req,res)=>{
       try {
-        const response = await axios.get(`http://localhost:9999/notify/?idAccount=${authToken.idCurrentUser}&sort=notifyAt`)
+        const response = await axios.get(`http://localhost:9999/notify/?idAccountReceive=${authToken.idCurrentUser}&sort=notifyAt`)
         return response.data;
       } catch (err) {
         console.log(err.message);

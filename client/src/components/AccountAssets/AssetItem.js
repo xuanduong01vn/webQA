@@ -27,6 +27,7 @@ function AccountPostItem(props){
       }
     }
   }
+  
   function seeNotify(e){
     // console.log(e);
     // e.scrollIntoView({ behavior: 'smooth' });
