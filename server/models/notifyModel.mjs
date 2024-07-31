@@ -26,7 +26,7 @@ const notifySchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
-  idLink:{
+  idObject:{
     type: String, 
   },
   typeNotify:{
