@@ -1,42 +1,136 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom'; 
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import Cookies from 'js-cookie';
+import axios from 'axios';
+import { format, longFormatters } from 'date-fns';
+import { vi } from 'date-fns/locale';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass,
           faPen,
-          faBell
+          faBell,
+          faXmark,
  } from '@fortawesome/free-solid-svg-icons';
  import { AuthContext } from '../../AuthContext';
 
 function HeaderAdmin(){
+  const location = useLocation();
+  const navigate = useNavigate();
+  const getQueryParams = (search) => {
+    return new URLSearchParams(search);
+  };
+  const queryParams = getQueryParams(location.search);
+  var isSearch = queryParams.get('search');
 
   const [openInput, setOpenInput] = useState(false);
   const [namePopup, setNamePopup] = useState(null);
-  const [searchText, setSearchText] = useState('');
+  const [userNotify, setUserNotify] = useState(null);
+  const [searchText, setSearchText] = useState(isSearch || '');
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const currentToken = useContext(AuthContext);
+  const [amountNotify, setAmountNotify] = useState(null);
 
   const inputRef = useRef();
   const popupRefs = useRef({});
   const btnRefs = useRef({});
 
-  function handleSearchClick(text){
+  const [amountSeen, setAmountSeen] = useState(null);
 
+  function handleSearchKey(){
+    if(searchText.trim().length>0){
+      queryParams.set('search', searchText.trim());
+      navigate(
+        {
+          pathname: location.pathname,
+          search: queryParams.toString(),
+        }
+      )
+    }
   }
 
-  function onChangeValue(value){
-    console.log(value);
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSearchKey();
+    }
+  };
+
+  useEffect(()=>{
+    if(currentToken?.idCurrentUser){
+      const getNotify = async(req,res)=>{
+        try {
+          const response = await axios.get(`http://localhost:9999/notify?idAccountReceive=${currentToken?.idCurrentUser}&sort=notifyAt`);
+          return response.data;
+          
+        } catch (err) {
+          console.log(err.message);
+        }
+      }
+    getNotify()
+    .then(data=>{
+      setUserNotify(data);
+    })
+    .catch(err=>{
+      console.log(err.message);
+    })
+    }
+  },[amountSeen]);
+
+  useEffect(()=>{
+    if(currentToken?.idCurrentUser){
+      const getNotify = async(req,res)=>{
+        try {
+          const response = await axios.get(`http://localhost:9999/notify?idAccountReceive=${currentToken?.idCurrentUser}&isSeen=true`);
+          return response.data;
+          
+        } catch (err) {
+          console.log(err.message);
+        }
+      }
+    getNotify()
+    .then(data=>{
+      setAmountSeen(data);
+    })
+    .catch(err=>{
+      console.log(err.message);
+    })
+    }
+  },[]);
+
+  function openNotifyBox(){
+    if(amountNotify>0){
+      currentToken.updateNotifyState(0);
+      setAmountNotify(0);
+      axios.put(`http://localhost:9999/accounts/${currentToken?.idCurrentUser}`,{
+        newNotify: 0,
+    })
+    .then(res=>{
+      console.log(res.data);
+    })
+    .catch(err=>{
+      console.log(err.message);
+    })
+    }
+  }
+
+  useEffect(()=>{
+    setAmountNotify(currentToken?.userLogin?.newNotify);
+  },[]);
+
+  function onChangeValue(e){
+    setSearchText(e.target.value);
   }
 
   //handle open search box in mobile screen
-  const handleOpenSearchBox =()=>{
-    if(!openInput)
-      setOpenInput(true);
+  function handleOpenSearchBox(){
+    setOpenInput(true);
+    inputRef.current.focus();
+    inputRef.current.setSelectionRange(0,0);
   }
   //handle close search box in mobile screen
-  const handleCloseSearchBox =()=>{
-    if(openInput)
-      setOpenInput(false);
+  function handleCloseSearchBox(){
+    setOpenInput(false);
+    setSearchText('');
   }
 
   function handleLogOut(){
@@ -49,6 +143,7 @@ function HeaderAdmin(){
     function handleClickOutside(e) {
       var looped=0;
       Object.keys(btnRefs.current).forEach(btn => {
+        
         if(btnRefs.current[btn].contains(e.target)){
           ++looped;
           if(!namePopup){
@@ -84,16 +179,64 @@ function HeaderAdmin(){
     Cookies.remove('token')
   }
 
+  function seeNotify(e){
+    // console.log(e);
+    // e.scrollIntoView({ behavior: 'smooth' });
+    console.log(userNotify?.find(n=>n._id==e?.getAttribute('name'))?.isSeen);
+    if(userNotify?.find(n=>n._id==e?.getAttribute('name'))?.isSeen==false){
+      axios.put(`http://localhost:9999/notify/${e?.getAttribute('name')}`,{
+        isSeen: true,
+      })
+      .then(res=>{
+        console.log(res.data);
+        setAmountSeen(amountSeen+1);
+      })
+      .catch(err=>{
+        console.log(err.message);
+      })
+
+      
+    }
+    setNamePopup(null);
+  }
+
+  const now = new Date();
+  function formatTime(time){  
+    if(time?.length>0){
+      if(now.getFullYear()== new Date(time).getFullYear()){
+        return format(new Date(time), 'HH:mm, dd MMM', { locale: vi });
+      }
+      else{
+        return format(new Date(time), 'HH:mm, dd MMM yyyy', { locale: vi });
+      }
+    }
+  }
+
     return (    
         <Wrapper>
           <div className='header-container'>
             <div className='header-bar'>
               <Link to='/' className='header-title'>QAx</Link>
-              <div id='search-container'>
-                <input id='search-box' type='text' placeholder='Tìm kiếm trên QAx'/>
-                <button id='search-btn'>
-                  <FontAwesomeIcon icon={faMagnifyingGlass} className='search-icon' />
-                </button>
+              <div className={(window.innerWidth<=768 && (openInput || searchText.trim().length>0))?'search-container mobile':'search-container'}>
+                  <input ref={inputRef}
+                  id='search-box' 
+                  type='text' placeholder='Tìm kiếm trên QAx'
+                  value = {searchText} 
+                  autoComplete='off'
+                  onChange={e=>{onChangeValue(e)}}
+                  onKeyDown={handleKeyDown}/>
+                  
+                  <button onClick={handleSearchKey} className={searchText.trim().length>0?'search-btn':'search-btn disable'}>
+                    <FontAwesomeIcon icon={faMagnifyingGlass} className='search-icon' />
+                  </button>
+                  {(window.innerWidth<=768 && (openInput || searchText.trim().length>0)) && 
+                    <button onClick={handleCloseSearchBox} id='search-cancel-btn'>
+                    <FontAwesomeIcon icon={faXmark} className='search-cancel-icon' />
+                  </button>}
+                  {((window.innerWidth<=768 && searchText.trim().length==0) && !openInput) && 
+                    <button onClick={handleOpenSearchBox} className='search-header-btn'>
+                    <FontAwesomeIcon icon={faMagnifyingGlass} className='search-icon' />
+                  </button>}
               </div> 
               <div className='user-container'>
                 <div className='user-container-item'>
@@ -116,15 +259,54 @@ function HeaderAdmin(){
                   </button>
                 </div>
                 <div className='user-container-item'>
-                  <button className='notify-btn user-btn'>
+                  <button className='notify-btn user-btn' onClick={openNotifyBox} ref={el => (btnRefs.current['notify'] = el)}>
                     <FontAwesomeIcon icon={faBell} className='notify-icon user-container-icon'/>
+                    {amountNotify>0 &&
                     <div className='notify-alert'>
-                      <p className='notify-alert-amount'>68</p>
+                        <span className='notify-alert-amount'>{amountNotify<10?amountNotify:`9+`}</span>
                     </div>
+                    }
+                    <div ref={el => (popupRefs.current['notify'] = el)} className={namePopup=='notify'?'header-pop-up-open':'header-pop-up'}>
+                        {userNotify?.length==0 || !userNotify
+                        ?(
+                          <span className='header-notify-alert'>Không có thông báo nào</span>)
+                        :(
+                          <ul className='header-pop-up-list notify-list'>
+                            {userNotify?.map(n=>(
+                              <li key={n?._id} name={n?._id} onClick={e=>seeNotify(e.currentTarget)} className='header-pop-up-item'>
+                                <Link to={n?.linkNotify} className='header-pop-up-link header-notify-item'>
+                                  <span className='header-notify-item-content'>
+                                    <div dangerouslySetInnerHTML={{ __html: n?.contentNotify}}></div>
+                                    <div>{formatTime(n?.notifyAt)}</div>
+                                  </span>
+                                  <span className={n?.isSeen?'header-notify-item-state seen':'header-notify-item-state'}></span>
+                                </Link>
+                              </li>
+                            ))
+                            }
+                          </ul>
+                          )
+                        }
+                        <Link to={!userNotify?`/login`:`/account/notify`} onClick={()=>{setNamePopup(null);}} className='header-pop-up-link see-all-notify'>{!userNotify?`Đăng nhập để xem thông báo`:`Xem tất cả thông báo`}
+                        </Link>
+                      </div>
                   </button>
                 </div>
-                <div className='user-container-item'>
-                  <button ref={el => (btnRefs.current['user'] = el)} className='user-bar user-btn'>
+                {!currentToken.idCurrentUser 
+                ?(
+                  <div className='sign-container'>
+                    <Link to='/login' id='sign-btn'>
+                      Đăng nhập/ Đăng ký
+                    </Link>
+                  </div>
+                )
+                :(
+                  <div className='user-container-item'>
+                  <button ref={el => (btnRefs.current['user'] = el)} 
+                  // onClick={(e)=>{
+                  //   handleOpenPopUp('user',e);
+                  // }} 
+                  className='user-bar user-btn'>
                     <div className='user-avatar'>
                       <img src={currentToken.userLogin?.avatar} alt='' className='user-image'/>
                     </div>
@@ -147,15 +329,16 @@ function HeaderAdmin(){
                           </Link>
                         </li>
                         <li className='header-pop-up-item'>
-                          <Link to='/' onClick={handleLogOut} className='header-pop-up-link log-out'>
+                          <a href='/' onClick={handleLogOut} className='header-pop-up-link log-out'>
                             Đăng xuất
-                          </Link>
+                          </a>
                         </li>
                       </ul>
                     </div>
                     
                   </button>
                 </div>
+                )}
               </div>
             </div>
           </div>                                    
@@ -217,13 +400,14 @@ const Wrapper = styled.div`
   }
 
   .header-bar{
-    width: var(--general-width);
+    width: 100%;
     height: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin: 0 auto;
     box-sizing: border-box;
+    padding: 0 24px;
   }
 
   .header-title{
@@ -237,7 +421,22 @@ const Wrapper = styled.div`
       1px 1px 0 var(--text-color);
   }
 
-  #search-container{
+  .search-container.mobile{
+    position: absolute;
+    z-index: 99;
+    width: 100%;
+    height: 60px;
+    margin: 0 -12px;
+    border-radius: 0;
+
+    & #search-box{
+      width: 100%; 
+      border-radius: 0;
+      display: flex;
+    }
+  }
+
+  .search-container{
     border-radius: 18px;
     width: max-content; 
     min-width: 36px;
@@ -249,10 +448,11 @@ const Wrapper = styled.div`
     align-items: center;
   }
 
-  #search-box{
+  .search-container #search-box{
     border-radius: 18px;
     border: 2px solid var(--shadow-color);
     width: 400px; 
+    height: 100%;
     outline: none;
     padding: 8px 36px 8px 24px;
     font-size: 16px;
@@ -267,7 +467,7 @@ const Wrapper = styled.div`
     background-color: white;
   }
 
-  #search-container button{
+  .search-container button{
     position: absolute;
     right: 0;
     border: none;
@@ -276,29 +476,45 @@ const Wrapper = styled.div`
     background-color: transparent;
   }
 
-  #search-container button svg{
+  .search-container .search-btn.disable{
+    cursor: default;
+
+    & svg{
+      color: var(--shadow-color);
+    }
+
+    &:hover svg{
+      color: var(--shadow-color);
+    }
+  }
+
+  .search-container button svg{
     height: 20px;
     transition: var(--transition-time);
+    color: var(--text-color);
   }
 
-  #search-container button:hover svg{
+  .search-container button:hover svg{
     height: 20px;
-    color: var(--shadow-color);
+    color: var(--hightlight-color);
   }
 
-  #search-btn{
+  .search-btn{
     display: block;
   }
 
-  #search-header-btn{
-      display: none;
-    }
+  
+  .search-header-btn{
+    display: none;
+  }
 
   #sign-btn{
     text-decoration: none;
     color: var(--text-color);
     font-weight: 500;
     transition: var(--transition-time);
+    display: block;
+    width: max-content;
   }
 
   #sign-btn:hover{
@@ -317,6 +533,9 @@ const Wrapper = styled.div`
     margin-right: 18px;
     width: max-content;
     height: max-content;
+    height: 100%;
+    align-items: center;
+    display: flex;
   }
 
   .user-container-item:last-child{
@@ -338,12 +557,12 @@ const Wrapper = styled.div`
   }
 
   .notify-btn{
-    position: relative;
+    /* position: relative; */
   }
 
   .notify-alert{
     position: absolute;
-    top: -4px;
+    top: 12px;
     left: 12px;
     background-color: var(--hightlight-color);
     color: var(--primary-color);
@@ -414,6 +633,7 @@ const Wrapper = styled.div`
     transition: var(--transition-time);
     transform-origin: 0 -12px;
     right: 0;
+    box-sizing: border-box;
   }
 
   
@@ -452,15 +672,25 @@ const Wrapper = styled.div`
     right: 9px;       
   }
 
-  .header-pop-up-list{
-    list-style: none;
-  }
-
   .header-pop-up-list{ 
     list-style: none;
     padding: 0;
     margin: 0;
     width: max-content;
+  }
+
+  .header-pop-up-list.notify-list{
+    max-height: 380px;
+    overflow-y: scroll;
+    scrollbar-color: transparent;
+
+    &::-webkit-scrollbar-thumb {
+      background: transparent; 
+    }
+
+    & li:not(:last-child){
+      border-bottom: 1px solid var(--primary-color);
+    }
   }
 
   .header-pop-up-item{
@@ -483,9 +713,57 @@ const Wrapper = styled.div`
     color: var(--text-color);
   }
 
+  .header-notify-alert{
+    width: 300px;
+    height: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+  }
+
+  .header-pop-up-link.header-notify-item{
+    padding: 12px;
+    width: 300px;
+    min-width: 300px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+
+  .header-notify-item-content{
+    width: 100%;
+  }
+
+  .see-all-notify{
+    height: 40px;
+    box-sizing: border-box;
+    display: block;
+    border-top: 1px solid var(--shadow-color); 
+  }
+
+  .header-notify-item-state{
+    min-width: 8px;
+    height: 8px;
+    background-color: var(--hightlight-color);
+    box-sizing: border-box;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 12px;
+  }
+
+  .header-notify-item-state.seen{
+    background-color: transparent;
+  }
+
   .header-pop-up-link:hover{
     color: var(--hightlight-color);
     background-color: var(--primary-color);
+  }
+
+  .user-create-notify{
+    font-weight: 600;
   }
 
 `

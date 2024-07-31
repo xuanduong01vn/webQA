@@ -118,7 +118,7 @@ function PostComment(props){
             notifyAt: new Date(),
             linkNotify: `${location.pathname}`,
             isSeen: false,
-            idLink: res.data._id,
+            idObject: res.data._id,
             typeNotify: 'comment',
           })
           .then(res=>{
@@ -182,7 +182,7 @@ function PostComment(props){
             notifyAt: new Date(),
             linkNotify: `${location.pathname}`,
             isSeen: false,
-            idLink: res.data._id,
+            idObject: res.data._id,
             typeNotify: 'comment',
           })
           .then(res=>{
@@ -244,7 +244,7 @@ function PostComment(props){
     })
 
     if(post?.idAuthor!=authToken?.idCurrentUser){
-      axios.get(`http://localhost:9999/notify/?typeNotify=comment&idLink=${idCmt}`)
+      axios.get(`http://localhost:9999/notify/?typeNotify=comment&idObject=${idCmt}`)
       .then(res=>{
         axios.delete(`http://localhost:9999/notify/${res.data[0]._id}`)
         .then(res=>{

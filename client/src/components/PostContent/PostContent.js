@@ -218,8 +218,8 @@ function PostContent(props){
         notifyAt: new Date(),
         linkNotify: `${location.pathname}`,
         isSeen: false,
-        idLink: '',
-        typeNotify: 'like'
+        idObject: '',
+        typeNotify: 'like',
       })
       .then(res=>{
         console.log(res.data);
@@ -270,6 +270,7 @@ function PostContent(props){
     if(postData?.idAuthor!=userToken?.idCurrentUser){
       axios.get(`http://localhost:9999/notify/?typeNotify=like&idAccountReceive=${postData?.idAuthor}&idAccountSend=${userToken?.idCurrentUser}`)
       .then(res=>{
+        console.log(res.data);
         axios.delete(`http://localhost:9999/notify/${res.data[0]._id}`)
         .then(res=>{
           console.log(res.data);

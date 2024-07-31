@@ -56,7 +56,7 @@ import {
       <ul className='top-menu'>
       <li className='top-menu-item'>
         <Link to='/dashboard/' className={title=='dashboard'?'menu-item-link active':'menu-item-link'}>
-          <FontAwesomeIcon icon={faHouse} />Tổng qua
+          <FontAwesomeIcon icon={faHouse} />Tổng quan
         </Link>
       </li>
         <li className='top-menu-item'>
