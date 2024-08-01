@@ -54,12 +54,17 @@ import {
   return(
     <Wrapper>
       <ul className='top-menu'>
-      <li className='top-menu-item'>
-        <Link to='/dashboard/' className={title=='dashboard'?'menu-item-link active':'menu-item-link'}>
-          <FontAwesomeIcon icon={faHouse} />Tổng quan
-        </Link>
-      </li>
         <li className='top-menu-item'>
+          <Link to='/dashboard/' className={title=='dashboard'?'menu-item-link active':'menu-item-link'}>
+            <FontAwesomeIcon icon={faHouse} />Tổng quan
+          </Link>
+        </li>
+        <li className='top-menu-item'>
+          <Link to='/dashboard/posts' className={title=='post'?'menu-item-link active':'menu-item-link'}>
+            <FontAwesomeIcon icon={faHouse} />Bài viết
+          </Link>
+        </li>
+        {/* <li className='top-menu-item'>
           <button onClick={() => handleOpenLowMenu('post')} className='top-menu-down'>
             <FontAwesomeIcon icon={faPen} />Bài viết
             <span className={(openedLowMenu=='post')?'opened-menu-icon opened':'opened-menu-icon'} >
@@ -75,15 +80,15 @@ import {
               Bài viết
               </Link>
             </li>
-            {/* <li className='low-menu-item'>
+            <li className='low-menu-item'>
               <a href='/dashboard/questions' className='menu-item-link'>
               <FontAwesomeIcon icon={faQuestion} />Câu hỏi
               </a>
-            </li> */}
+            </li>
           </ul>
           }
           
-        </li>
+        </li> */}
         <li className='top-menu-item'>
           <button onClick={() => handleOpenLowMenu('admin')} className='top-menu-down'>
               <FontAwesomeIcon icon={faUser} />Tài khoản

@@ -43,7 +43,7 @@ function DashboardPost(){
   useEffect(()=>{
     const getDataPost = async () => {
       try {
-        const response = await axios.get(`http://localhost:9999/posts/`);
+        const response = await axios.get(`http://localhost:9999/posts/?sort=createAt`);
         return response.data;
       } catch (err) {
         console.log('Error fetching posts:', err.message);
@@ -332,6 +332,10 @@ const Wrapper = styled.div`
 
   tr td:first-child{
     text-align: center;
+  }
+
+  tr td:nth-child(5){
+    font-weight: 700;
   }
 
   thead th:nth-child(1){

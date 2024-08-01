@@ -45,6 +45,9 @@ function UserLayout(props){
     };
     getUserPost()
     .then(res=>{
+      setUserLiked(res.reduce((likeSum,post)=>{
+        return likeSum + post.amountLiked;
+      },0));
       setUserPost(res.length);
     })
     .catch(err=>{

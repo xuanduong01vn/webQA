@@ -42,7 +42,7 @@ function DashboardTag(){
   useEffect(()=>{
     const getDataTag = async () => {
       try {
-        const response = await axios.get(`http://localhost:9999/tags`);
+        const response = await axios.get(`http://localhost:9999/tags?sort=createAt`);
         return response.data;
       } catch (err) {
         console.log('Error fetching authors:', err.message);

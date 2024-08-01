@@ -42,7 +42,7 @@ function DashboardUser(){
   useEffect(()=>{
     const getDataAdmin = async () => {
       try {
-        const response = await axios.get(`http://localhost:9999/accounts/?idTypeAccount=2`);
+        const response = await axios.get(`http://localhost:9999/accounts/?idTypeAccount=2&sort=createAt`);
         return response.data;
       } catch (err) {
         console.log('Error fetching authors:', err.message);
