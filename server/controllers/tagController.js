@@ -8,7 +8,7 @@ const tagController ={
         .sorting()
         .search()
         .filtering()
-        .paginating();
+        // .paginating();
       const allTags = await features.query;
       res.status(200).json(allTags);
     } catch (err) {
