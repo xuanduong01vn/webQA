@@ -64,7 +64,9 @@ function UserLayout(props){
               <img src={useData?.avatar} alt='' className='user-info-image'/>
             </div>
             <div className='user-info-name'>
-              <p className='user-info-fullname'>{useData?.fullname}</p>
+              {useData?.fullname && 
+                <p className='user-info-fullname'>{useData?.fullname}</p>
+              }
               <p className='user-info-username'>{useData?.username}</p>
             </div>
           </div>
