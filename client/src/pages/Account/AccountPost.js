@@ -8,7 +8,7 @@ import axios from 'axios';
 import { AuthContext } from '../../AuthContext';
 
 function AccountPost(){
-  document.title='My post';
+  document.title='My posts';
   const [posts, setPosts] = useState(null);
   const [accs, setAccs] = useState(null);
 

@@ -31,7 +31,7 @@ const routes=[
   {path: '/account/profile', component: Profile},
   {path: '/account/password', component: Password},
   {path: '/user/:id', component: User},
-  {path: '/account/post', component: AccountPost},
+  {path: '/account/posts', component: AccountPost},
   {path: '/account/deleted', component: AccountDeleted},
   {path: '/account/marked', component: AccountMarked},
   {path: '/account/liked', component: AccountLiked},

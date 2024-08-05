@@ -336,7 +336,7 @@ function Header(){
                           </Link>
                         </li>
                         <li className='header-pop-up-item'>
-                          <Link to='/account/post' className='header-pop-up-link blog-manage'>
+                          <Link to='/account/posts' className='header-pop-up-link blog-manage'>
                             Hoạt động của tôi
                           </Link>
                         </li>
