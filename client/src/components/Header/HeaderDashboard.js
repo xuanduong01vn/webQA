@@ -315,17 +315,17 @@ function HeaderAdmin(){
                       <ul className='header-pop-up-list'>
                         <li className='header-pop-up-item'>
                           <Link to='/account/profile' className='header-pop-up-link user-profile'>
-                            Trang cá nhân
+                            Tài khoản của tôi
                           </Link>
                         </li>
                         <li className='header-pop-up-item'>
                           <Link to={`/user/${currentToken.idCurrentUser}`} className='header-pop-up-link blog-manage'>
-                            Trang hoạt động
+                            Trang cá nhân
                           </Link>
                         </li>
                         <li className='header-pop-up-item'>
                           <Link to='/account/post' className='header-pop-up-link blog-manage'>
-                            Quản lý bài viết
+                            Hoạt động của tôi
                           </Link>
                         </li>
                         <li className='header-pop-up-item'>
