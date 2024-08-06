@@ -1,13 +1,15 @@
 import styled from 'styled-components';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import Header from '../../components/Header/Header.js';
+import HeaderDashboard from '../../components/Header/HeaderDashboard';
 import Footer from '../../components/Footer/Footer.js';
 import PostContent from '../../components/PostContent/PostContent.js';
+import { AuthContext } from '../../AuthContext';
 
 function ReadPost(){
-  
+  const authToken = useContext(AuthContext);
   const [post, setPost] = useState({
     title: '',
     id: '',
@@ -66,7 +68,10 @@ function ReadPost(){
             </div>
           </div>
         </div>
-        <Header/>
+        {authToken?.userLogin?.idTypeAccount==1 
+        ?(<HeaderDashboard/>)
+        :(<Header/>)
+      }
         <div className='content-section'>
           <PostContent onDataReceived={handlePost} onDeletePost={handleOpenPopup} onIsDeleted={post.isDeleted}/>
         </div>

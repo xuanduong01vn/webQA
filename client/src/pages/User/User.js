@@ -1,15 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 import Header from '../../components/Header/Header';
+import HeaderDashboard from '../../components/Header/HeaderDashboard';
 import UserLayout from '../../components/User/User';
 import Footer from '../../components/Footer/Footer';
+import { AuthContext } from '../../AuthContext';
 
 function User(){
-  
-
+  const authToken = useContext(AuthContext);
   const [userFullname, setUserFullname] = useState('');
   
-
   function handleUserName(fullname){
     setUserFullname(fullname);
   }
@@ -18,7 +18,10 @@ function User(){
 
   return(
     <Wrapper>
-      <Header/>
+      {authToken?.userLogin?.idTypeAccount==1 
+        ?(<HeaderDashboard/>)
+        :(<Header/>)
+      }
       <div className='content-section'>
         <UserLayout onDataReceived={handleUserName}/>
       </div>

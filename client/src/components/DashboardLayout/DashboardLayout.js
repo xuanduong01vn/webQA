@@ -55,7 +55,7 @@ import {
     <Wrapper>
       <ul className='top-menu'>
         <li className='top-menu-item'>
-          <Link to='/dashboard/' className={title=='dashboard'?'menu-item-link active':'menu-item-link'}>
+          <Link to='/dashboard' className={title=='dashboard'?'menu-item-link active':'menu-item-link'}>
             <FontAwesomeIcon icon={faHouse} />Tổng quan
           </Link>
         </li>
@@ -100,12 +100,12 @@ import {
           {(openedLowMenu=='admin' || openedLowMenu=='user') &&
             <ul className='low-menu'>
             <li className='low-menu-item'>
-              <Link to='/dashboard/admins/' className={title=='admin'?'menu-item-link active':'menu-item-link'}>
+              <Link to='/dashboard/admins' className={title=='admin'?'menu-item-link active':'menu-item-link'}>
               Quản trị viên
               </Link>
             </li>
             <li className='low-menu-item'>
-              <Link to='/dashboard/users/' className={title=='user'?'menu-item-link active':'menu-item-link'}>
+              <Link to='/dashboard/users' className={title=='user'?'menu-item-link active':'menu-item-link'}>
               Người dùng
               </Link>
             </li>
@@ -113,12 +113,12 @@ import {
           }
         </li>
         <li className='top-menu-item'>
-          <Link to='/dashboard/comments/' className={title=='comment'?'menu-item-link active':'menu-item-link'}>
+          <Link to='/dashboard/comments' className={title=='comment'?'menu-item-link active':'menu-item-link'}>
             <FontAwesomeIcon icon={faComment} />Bình luận
           </Link>
         </li>
         <li className='top-menu-item'>
-          <Link to='/dashboard/tags/' className={title=='tag'?'menu-item-link active':'menu-item-link'}>
+          <Link to='/dashboard/tags' className={title=='tag'?'menu-item-link active':'menu-item-link'}>
             <FontAwesomeIcon icon={faHashtag} />Gắn nhãn
           </Link>
         </li>

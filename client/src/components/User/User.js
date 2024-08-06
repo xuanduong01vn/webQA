@@ -86,7 +86,7 @@ function UserLayout(props){
           </div>
         </div>
         <div className='user-content'>
-          <h2 className='blog-container-title'>Bài viết</h2>
+          <h2 className='blog-container-title'>Bài viết của bạn</h2>
             <PostList idUser={id}/>
           {/* <QuestionList/> */}
         </div>

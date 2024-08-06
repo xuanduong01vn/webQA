@@ -24,11 +24,11 @@ function AssetsLayout(props){
   window.addEventListener('resize', onResizeWidthBrowser)
 
   const navbarItems=[
-    {path:'/account/post', title: 'Bài viết'},
+    {path:'/account/posts', title: 'Bài viết'},
     {path:'/account/deleted', title: 'Đã xóa'},
     {path:'/account/liked', title: 'Đã thích'},
     {path:'/account/marked', title: 'Đã lưu'},
-    {path:'/account/notify', title: 'Thông báo'},
+    {path:'/account/notifications', title: 'Thông báo'},
   ]
 
   const [selectedItem, setSelectedItem]=useState(0);

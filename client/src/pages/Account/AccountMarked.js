@@ -1,6 +1,7 @@
 import AssetsLayout from '../../components/AccountAssets/AssetsLayout';
 import AssetsPost from '../../components/AccountAssets/AssetsPost';
 import Header from '../../components/Header/Header';
+import HeaderDashboard from '../../components/Header/HeaderDashboard';
 import Footer from '../../components/Footer/Footer';
 import styled from 'styled-components';
 import React, { useEffect, useState, useContext } from 'react';
@@ -90,7 +91,10 @@ function AccountMarked(){
 
   return (
     <Wrapper>
-      <Header/>
+      {userToken?.userLogin?.idTypeAccount==1 
+        ?(<HeaderDashboard/>)
+        :(<Header/>)
+      }
       <div className='account-container'>
         <div className='account-layout'>
           <AssetsLayout itemActive={'Đã lưu'}/>

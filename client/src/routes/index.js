@@ -47,7 +47,7 @@ const routes=[
   {path: '/dashboard/comments', component: PageDashboardComment},
   {path: '/dashboard/post/:id', component: PageDashboardPostDetail},
   {path: '/dashboard/user/:id', component: PageDashboardUserDetail},
-  {path: '/account/notify', component: AccountNotify},
+  {path: '/account/notifications', component: AccountNotify},
 ]
 
 export { routes };
