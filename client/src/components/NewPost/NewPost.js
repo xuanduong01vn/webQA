@@ -91,6 +91,9 @@ function NewPost(){
       ...inputValue,
       [name]: value,
     });
+
+
+    console.log(inputValue);
     
   }
 

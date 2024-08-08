@@ -287,7 +287,7 @@ function HeaderAdmin(){
                           </ul>
                           )
                         }
-                        <Link to={!userNotify?`/login`:`/account/notify`} onClick={()=>{setNamePopup(null);}} className='header-pop-up-link see-all-notify'>{!userNotify?`Đăng nhập để xem thông báo`:`Xem tất cả thông báo`}
+                        <Link to={!userNotify?`/login`:`/account/notifications`} onClick={()=>{setNamePopup(null);}} className='header-pop-up-link see-all-notify'>{!userNotify?`Đăng nhập để xem thông báo`:`Xem tất cả thông báo`}
                         </Link>
                       </div>
                   </button>
