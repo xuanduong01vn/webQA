@@ -114,7 +114,7 @@ function PostComment(props){
           axios.post(`http://localhost:9999/notify`,{
             idAccountReceive: post?.idAuthor,
             idAccountSend: authToken?.idCurrentUser,
-            contentNotify: `<span class='user-create-notify'>${authToken?.userLogin?.username}</span> đã bình luận bài viết của bạn`,
+            contentNotify: `<strong>${authToken?.userLogin?.username}</strong> đã bình luận bài viết của bạn`,
             notifyAt: new Date(),
             linkNotify: `${location.pathname}`,
             isSeen: false,
@@ -178,7 +178,7 @@ function PostComment(props){
           axios.post(`http://localhost:9999/notify`,{
             idAccountReceive: post?.idAuthor,
             idAccountSend: authToken?.idCurrentUser,
-            contentNotify: `<span class='user-create-notify'>${authToken?.userLogin?.username}</span> đã bình luận bài viết của bạn`,
+            contentNotify: `<strong'>${authToken?.userLogin?.username}</strong> đã bình luận bài viết của bạn`,
             notifyAt: new Date(),
             linkNotify: `${location.pathname}`,
             isSeen: false,

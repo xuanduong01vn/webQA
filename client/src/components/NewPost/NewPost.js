@@ -292,9 +292,13 @@ function NewPost(){
           //     uploadUrl: '/path/to/upload/image',
           //   },
           // }}
-          onChange={(event, editor) => {
+          onChange={(e, editor) => {
             const data = editor.getData();
-            setEditorData(data);
+            setInputValue({
+              ...inputValue,
+              content: data,
+            })
+            console.log(data);
           }}
         />  
       </div>

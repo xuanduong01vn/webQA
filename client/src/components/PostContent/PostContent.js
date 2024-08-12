@@ -214,7 +214,7 @@ function PostContent(props){
       axios.post(`http://localhost:9999/notify`,{
         idAccountReceive: postData?.idAuthor,
         idAccountSend: userToken?.idCurrentUser,
-        contentNotify: `<span class='user-create-notify'>${userToken?.userLogin?.username}</span> đã thích bài viết của bạn`,
+        contentNotify: `<strong>${userToken?.userLogin?.username}</strong> đã thích bài viết của bạn`,
         notifyAt: new Date(),
         linkNotify: `${location.pathname}`,
         isSeen: false,
@@ -430,10 +430,10 @@ function PostContent(props){
                   </div>
                 }
                 
-                <div className='post-content-text'>
-                  <p>
+                <div className='post-content-text' dangerouslySetInnerHTML={{ __html: postData.content}}>
+                  {/* <p >
                     {postData.content}
-                  </p>
+                  </p> */}
                 </div>
                 <span className='post-tags-item'>
                 {postData.listTag?.map((tag)=>(
