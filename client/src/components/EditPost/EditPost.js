@@ -1,8 +1,45 @@
 import React, {useEffect, useState, createContext} from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { CKEditor, Alignment } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios';
 import styled from 'styled-components';
 
+
+class NewEditor extends ClassicEditor {};
+
+NewEditor.builtinPlugins = [
+  ...ClassicEditor.builtinPlugins,
+  Alignment
+];
+
+NewEditor.defaultConfig = {
+  toolbar: {
+      items: [
+        'undo', 'redo', 
+        '|',
+        'heading', 
+        '|', 
+        'bold', 'italic', 'blockQuote',
+        '|', 
+        'link', 'imageUpload', 'codeBlock', 'insertTable', 
+        '|', 
+        'bulletedList', 'numberedList', 'outdent', 'indent',
+      ],
+      shouldNotGroupWhenFull: true,
+  },
+  alignment: {
+      options: [ 'left', 'center', 'right', 'justify' ]
+  },
+  // table: {
+  //     contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+  // },
+  language: 'en',
+  ckfinder: {
+    // Config for image upload
+    uploadUrl: '/path/to/upload/image',
+  },
+};
 
 function EditPost(props){
 
@@ -14,6 +51,7 @@ function EditPost(props){
   const [listTag, setListTag] = useState([]);
   const [tempListTag, setTempListTag] = useState([]);
   const [firstLoad, setFirstLoad] = useState(true);
+  const [editorData, setEditorData] = useState('');
   const [inputValue, setInputValue] = useState({
     title: '',
     content: '',
@@ -47,11 +85,11 @@ function EditPost(props){
       setInputValue({
         ...inputValue,
         title: data.title,
-        content: data.content,
       })
       setTempListTag([
         ...tempListTag.concat(data.listTag)
       ])
+      setEditorData(data.content)
     })
     .catch(err=>{
       console.log(err.message);
@@ -170,6 +208,7 @@ function EditPost(props){
       });
       
       newInputPost.listTag=tempListTag;
+      newInputPost.content= editorData;
 
       axios.put(`http://localhost:9999/posts/${id}`,newInputPost)
       .then(res=>{
@@ -230,13 +269,42 @@ function EditPost(props){
         </div>
 
         <div className='new-post-item'>
-          <div className='new-post-content'>
+          {/* <div className='new-post-content'>
             <textarea autoComplete='off' type='text' className='new-post-content-input' placeholder='Nội dung bài viết'
               value={inputValue.content} name='content'
               onChange={e=>onChangeValue(e)}
             />
-          </div>
+          </div> */}
         </div>
+        <CKEditor
+          editor={ClassicEditor}
+          data={editorData}
+          // config={{
+          //   toolbar: {
+          //     items: [
+          //       'undo', 'redo', 
+          //       '|',
+          //       'heading', 
+          //       '|', 
+          //       'bold', 'italic', 'blockQuote',
+          //       '|', 
+          //       'link', 'imageUpload', 'codeBlock', 'insertTable', 
+          //       '|', 
+          //       'bulletedList', 'numberedList', 'outdent', 'indent',
+          //     ],
+          //     shouldNotGroupWhenFull: true,
+          //   },
+          //   ckfinder: {
+          //     // Config for image upload
+          //     uploadUrl: '/path/to/upload/image',
+          //   },
+          // }}
+          onChange={(e, editor) => {
+            const data = editor.getData();
+            setEditorData(data);
+            console.log(data);
+          }}
+        />  
         
       </div>
     </Wrapper>
@@ -382,6 +450,33 @@ const Wrapper = styled.div`
     max-width: 100%;
     box-sizing: border-box;
     resize: none;
+  }
+
+  .ck-editor{
+    flex-wrap: wrap;
+    height: max-content;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .ck-editor__top{
+    width: 100%;
+    height: 40px;
+  }
+
+  .ck-editor__main{
+    width: 100%;
+    height: 700px;
+
+    & .ck-editor__editable:focus-within{
+      border: 1px solid var(--hightlight-color);
+    }
+  }
+
+  .ck-editor__editable{
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
   }
 
 `

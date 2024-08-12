@@ -664,6 +664,12 @@ const Wrapper = styled.div`
     background-color: var(--primary-color);
   }
 
+  .table table,
+  .table td{
+    border: 1px solid var(--shadow-color);
+    border-collapse: collapse;
+  }
+
   /* small desktop*/
   @media (max-width: 1279px) and (min-width: 769px) {
     display: block;

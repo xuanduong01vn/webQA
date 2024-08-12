@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useContext} from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { CKEditor, Alignment } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios';
@@ -192,6 +192,7 @@ function NewPost(){
       });
       
       newInputPost.listTag=tempListTag;
+      newInputPost.content= editorData;
 
       axios.post(`http://localhost:9999/posts/`,newInputPost)
       .then(res=>{
@@ -294,10 +295,7 @@ function NewPost(){
           // }}
           onChange={(e, editor) => {
             const data = editor.getData();
-            setInputValue({
-              ...inputValue,
-              content: data,
-            })
+            setEditorData(data);
             console.log(data);
           }}
         />  
