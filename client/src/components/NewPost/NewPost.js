@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CKEditor, Alignment } from '@ckeditor/ckeditor5-react';
+import { CKEditor, Alignment, Base64UploadAdapter } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios';
 import styled from 'styled-components';
@@ -10,10 +10,15 @@ class NewEditor extends ClassicEditor {};
 
 NewEditor.builtinPlugins = [
   ...ClassicEditor.builtinPlugins,
-  Alignment
+  Alignment,
+  Base64UploadAdapter,
 ];
 
 NewEditor.defaultConfig = {
+  ckfinder: {
+    // Đặt đường dẫn đến CKFinder connector (nơi xử lý các yêu cầu)
+    uploadUrl: 'http://localhost:9999/file/upload-post/',
+  },
   toolbar: {
       items: [
         'undo', 'redo', 
@@ -34,11 +39,7 @@ NewEditor.defaultConfig = {
   // table: {
   //     contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
   // },
-  language: 'en',
-  ckfinder: {
-    // Config for image upload
-    uploadUrl: '/path/to/upload/image',
-  },
+  language: 'en'
 };
 
 function NewPost(){

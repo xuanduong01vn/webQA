@@ -216,7 +216,10 @@ function HeaderAdmin(){
         <Wrapper>
           <div className='header-container'>
             <div className='header-bar'>
-              <Link to='/' className='header-title'>QAx</Link>
+                <div className='header-title-container'>
+                  <Link to='/dashboard' className='header-title'>QAx</Link>
+                  <Link to='/' className='header-title-client'>Trang chủ người dùng</Link>
+                </div>
               <div className={(window.innerWidth<=768 && (openInput || searchText.trim().length>0))?'search-container mobile':'search-container'}>
                   <input ref={inputRef}
                   id='search-box' 
@@ -410,6 +413,12 @@ const Wrapper = styled.div`
     padding: 0 24px;
   }
 
+  .header-title-container{
+    display: flex;
+    text-align: center;
+    align-items: center;
+  }
+
   .header-title{
     color: var(--shadow-color);
     font-size: 40px;
@@ -419,6 +428,14 @@ const Wrapper = styled.div`
       1px -1px 0 var(--text-color),
       -1px 1px 0 var(--text-color),
       1px 1px 0 var(--text-color);
+  }
+
+  .header-title-client{
+    margin-left: 24px;
+
+    &:hover{
+      color: var(--hightlight-color);
+    }
   }
 
   .search-container.mobile{
